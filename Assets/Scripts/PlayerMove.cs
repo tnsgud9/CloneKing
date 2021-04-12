@@ -12,6 +12,7 @@ public class PlayerMove : MonoBehaviour
     private SpriteRenderer _spriteRenderer;
     private Animator _animator;
 
+    private float _horizontal;
 
     void Start()
     {
@@ -21,58 +22,36 @@ public class PlayerMove : MonoBehaviour
 
     void Update()
     {
-        #region LEFT INPUT
+        _horizontal = Input.GetAxisRaw("Horizontal");
+        AnimationUpdate();
+        MoveUpdate();
+    }
 
-        if (Input.GetKeyDown(KeyCode.LeftArrow))
-        {
-            _animator.SetTrigger("move");
-        }
+    private void AnimationUpdate()
+    {
+        if(_horizontal == 0)
+            _animator.SetBool("isMove",false);
+        else
+            _animator.SetBool("isMove",true);
 
-        if (Input.GetKey(KeyCode.LeftArrow))
-        {
+        if (_horizontal == -1)
             _spriteRenderer.flipX = true;
-            transform.position += Vector3.left * (Time.deltaTime * speed);
-            if(!_animator.GetCurrentAnimatorStateInfo(0).IsName("Move")) //점프 후 이동중 애니메이션 동작 FIX 
-                _animator.SetTrigger("move");
-        }
 
-
-        if (Input.GetKeyUp(KeyCode.LeftArrow))
-        {
-            if (!Input.GetKey(KeyCode.RightArrow))
-            {
-                _animator.SetTrigger("idle");
-            }
-        }
-
-        #endregion
-
-        #region RIGHT INPUT
-
-        if (Input.GetKeyDown(KeyCode.RightArrow))
-        {
-            _animator.SetTrigger("move");
-            
-        }
-
-        if (Input.GetKey(KeyCode.RightArrow))
-        {
+        if (_horizontal == 1)
             _spriteRenderer.flipX = false;
-            transform.position += Vector3.right * (Time.deltaTime * speed);
-            if(!_animator.GetCurrentAnimatorStateInfo(0).IsName("Move")) //점프 후 이동중 애니메이션 동작 FIX 
-                _animator.SetTrigger("move");
-            
-        }
+    }
 
-        if (Input.GetKeyUp(KeyCode.RightArrow))
+    private void MoveUpdate()
+    {
+        if (_horizontal == -1)
         {
-            if (!Input.GetKey(KeyCode.LeftArrow))
-            {
-                _animator.SetTrigger("idle");
-            }
+            transform.position += Vector3.left * (Time.deltaTime * speed);
         }
 
-        #endregion
+        if (_horizontal == 1)
+        {
+            transform.position += Vector3.right * (Time.deltaTime * speed);
+        }
     }
 
 }
