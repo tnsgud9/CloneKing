@@ -33,6 +33,9 @@ public class PlayerJump : MonoBehaviour
 
     void Update()
     {
+        
+        JumpEvent();
+        /*
         // 점프 상태가 아니고 땅에 있을때 
         if (Input.GetKeyDown(KeyCode.Space) && !isJump && isGround) 
         {
@@ -82,8 +85,74 @@ public class PlayerJump : MonoBehaviour
         {
             _animator.SetTrigger("idle");
         }
+        */
     }
 
+    private void JumpEvent()
+    {
+        #region Jump Ready
+        if (Input.GetKey(KeyCode.Space) && isGround && !isJump)
+        {
+            _playerMove.enabled = false;
+            _animator.enabled = false;
+            _spriteRenderer.sprite = jumpReadySprite;
+            
+            _jumpForce += 5f * Time.deltaTime;
+            
+            if (_jumpForce > jumpMaxForce) _jumpForce = jumpMaxForce;
+        }
+        #endregion
+
+        #region Jump
+        if (Input.GetKeyUp(KeyCode.Space) && isGround && !isJump)
+        {
+            isJump = true;
+            _spriteRenderer.sprite = jumpSprite;
+            if (_spriteRenderer.flipX) // 왼쪽 보고 있을 때 
+            {
+                _rigidbody.velocity = new Vector2(-1, 1) * _jumpForce;
+            }
+            else // 오른쪽 보고 있을떄
+            {
+                _rigidbody.velocity = new Vector2(1, 1) * _jumpForce;
+            }
+
+            _rigidbody.sharedMaterial = playerBouncePhysicsMaterial;
+            _jumpForce = jumpMinForce;
+        }
+        #endregion
+    }
+
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        Instantiate()
+        isGround = true;
+        isJump = false;
+        _playerMove.enabled = true;
+        _animator.enabled = true;
+        _rigidbody.sharedMaterial = playerPhysicsMaterial;
+        
+        _rigidbody.AddForce(new Vector2(0,-1) * 100f, ForceMode2D.Impulse);
+        // 땅에 부딪힐 경우 강제적으로 아래로 힘을 넣어서 관성작용을 멈춤.
+        Debug.Log("Trigger Enter");
+        
+        
+    }
+
+    private void OnTriggerStay2D(Collider2D other)
+    {
+        isGround = true;
+        isJump = false;
+        _playerMove.enabled = true;
+        _animator.enabled = true;
+        _rigidbody.sharedMaterial = playerPhysicsMaterial;
+        
+        
+    }
+    
+}
+
+/*
     private void FixedUpdate()
     {
         if (Input.GetKey(KeyCode.Space) && !isJump && isGround)
@@ -127,5 +196,7 @@ public class PlayerJump : MonoBehaviour
     {
         Debug.Log("Collision Enter");
     }
+*/
 
-}
+        
+
