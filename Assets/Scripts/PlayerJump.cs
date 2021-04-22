@@ -35,57 +35,7 @@ public class PlayerJump : MonoBehaviour
     {
         
         JumpEvent();
-        /*
-        // 점프 상태가 아니고 땅에 있을때 
-        if (Input.GetKeyDown(KeyCode.Space) && !isJump && isGround) 
-        {
-            _playerMove.enabled = false; //플레이어 이동 멈춤.
-            _animator.enabled = false;
-            _spriteRenderer.sprite = jumpReadySprite;
-        }
-
-        if (Input.GetKey(KeyCode.Space) && !isJump && isGround)
-        {
-            _playerMove.enabled = false; //플레이어 이동 멈춤.
-            _animator.enabled = false;
-            _spriteRenderer.sprite = jumpReadySprite;
-            
-            _jumpForce += 3f * Time.deltaTime;
-            Debug.Log("JUMP FORCE : "+ _jumpForce);
-            if (_jumpForce > jumpMaxForce) _jumpForce = jumpMaxForce;
-            // 각도 변경 되는 이벤트
-        }
-
-        if (Input.GetKeyUp(KeyCode.Space) && !isJump && isGround)
-        {
-            _playerMove.enabled = false; //플레이어 이동 멈춤.
-            _animator.enabled = false;
-            _spriteRenderer.sprite = jumpSprite;
-            
-            if (!_spriteRenderer.flipX) // player see direction right
-            {
-                _rigidbody.AddForce(new Vector2(1,1) * _jumpForce, ForceMode2D.Impulse);
-                //_rigidbody.velocity = new Vector2(1, 1) * _jumpForce;
-            }
-            else // player see direction left
-            {
-                _rigidbody.AddForce(new Vector2(-1,1) * _jumpForce, ForceMode2D.Impulse);
-                //_rigidbody.velocity = new Vector2(-1, 1) * _jumpForce;
-            }
-
-            isJump = true;
-            isGround = false;
-            
-            _rigidbody.sharedMaterial = playerBouncePhysicsMaterial;
-            _jumpForce = jumpMinForce;
-        }
-
-        //입력 버그 애니메이션 FIX
-        if (_animator.GetCurrentAnimatorStateInfo(0).IsName("Move") && !Input.anyKey)
-        {
-            _animator.SetTrigger("idle");
-        }
-        */
+        
     }
 
     private void JumpEvent()
@@ -98,7 +48,6 @@ public class PlayerJump : MonoBehaviour
             _spriteRenderer.sprite = jumpReadySprite;
             
             _jumpForce += 5f * Time.deltaTime;
-            
             if (_jumpForce > jumpMaxForce) _jumpForce = jumpMaxForce;
         }
         #endregion
@@ -123,80 +72,32 @@ public class PlayerJump : MonoBehaviour
         #endregion
     }
 
-    private void OnTriggerEnter2D(Collider2D other)
+    private void OnCollisionEnter2D(Collision2D other)
     {
-        Instantiate()
-        isGround = true;
-        isJump = false;
-        _playerMove.enabled = true;
-        _animator.enabled = true;
-        _rigidbody.sharedMaterial = playerPhysicsMaterial;
+       // Debug.Log("col enter");
+        foreach (ContactPoint2D hitPos in other.contacts)
+        {
+            //Debug.Log("Hit Pos Normal" + hitPos.normal);
+            //Debug.Log("Hit Pos y" + hitPos.normal.y);
+            
+            
+            if (hitPos.normal.y >= 0.5f)
+            {
+                isGround = true;
+                isJump = false;
+                _playerMove.enabled = true;
+                _animator.enabled = true;
+                _rigidbody.sharedMaterial = playerPhysicsMaterial;
         
-        _rigidbody.AddForce(new Vector2(0,-1) * 100f, ForceMode2D.Impulse);
-        // 땅에 부딪힐 경우 강제적으로 아래로 힘을 넣어서 관성작용을 멈춤.
-        Debug.Log("Trigger Enter");
-        
-        
-    }
+                // 땅에 부딪힐 경우 강제적으로 아래로 힘을 넣어서 관성작용을 멈춤.
+                _rigidbody.velocity = Vector2.zero;
+                //velocity는 해당 오브젝트의 질량의 법칙을 무시한다
+            }
 
-    private void OnTriggerStay2D(Collider2D other)
-    {
-        isGround = true;
-        isJump = false;
-        _playerMove.enabled = true;
-        _animator.enabled = true;
-        _rigidbody.sharedMaterial = playerPhysicsMaterial;
-        
-        
+        }
     }
+    
     
 }
 
-/*
-    private void FixedUpdate()
-    {
-        if (Input.GetKey(KeyCode.Space) && !isJump && isGround)
-        {
-            _playerMove.enabled = false; //플레이어 이동 멈춤.
-            _animator.enabled = false;
-            _spriteRenderer.sprite = jumpReadySprite;
-            
-            _jumpForce += Time.deltaTime;
-            //Debug.Log("JUMP FORCE : "+ _jumpForce);
-            if (_jumpForce > jumpMaxForce) _jumpForce = jumpMaxForce;
-            // 각도 변경 되는 이벤트
-        }
-    }
-
-    private void OnTriggerEnter2D(Collider2D other)
-    {
-        
-        //Todo: 수정할 부분
-        Debug.Log("Trigger Enter");
-        _rigidbody.sharedMaterial = playerPhysicsMaterial;
-        _rigidbody.velocity = Vector2.down*1000f;
-        //_rigidbody.AddForce(Vector2.down*10f,ForceMode2D.Force);
-    }
-
-    private void OnTriggerStay2D(Collider2D other)
-    {
-        isGround = true; // 땅인 경우 isGround = true;
-        if (isJump)
-        {
-            _playerMove.enabled = true;
-            _animator.enabled = true;
-            isJump = false;
-            _rigidbody.sharedMaterial = playerPhysicsMaterial;
-        }
-        
-    }
-
-
-    private void OnCollisionEnter2D(Collision2D other)
-    {
-        Debug.Log("Collision Enter");
-    }
-*/
-
-        
 
