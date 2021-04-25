@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PlayerPushHand : MonoBehaviour
 {
@@ -11,11 +12,17 @@ public class PlayerPushHand : MonoBehaviour
     private Animator _animator;
     public GameObject pushHand;
     public bool skillReady = true;
-    public float coolTime = 3f;
     public float pushForce;
     public Sprite playerPushSprite;
+    
+    
+    public GameObject gauge;
+    private Animation _gagueAnimation;
     private void Start()
     {
+        //주의!! player가 갖고 있는 reload bar의 구성이 변경되면 오류가 발생할 수 있음.
+        _gagueAnimation = gauge.transform.GetChild(0).transform.GetChild(1).GetComponent<Animation>(); 
+        gauge.SetActive(false);
         _spriteRenderer = GetComponent<SpriteRenderer>();
         _animator = GetComponent<Animator>();
         _playerJump = GetComponent<PlayerJump>();
@@ -23,7 +30,7 @@ public class PlayerPushHand : MonoBehaviour
     }
 
     // 이벤트는 Update문에 넣으면 된다.
-    void Update()
+    private void Update()
     {
         if (Input.GetKeyDown(KeyCode.LeftControl) && skillReady)
         {
@@ -37,28 +44,41 @@ public class PlayerPushHand : MonoBehaviour
                 _playerMove.enabled = true;
                 _playerJump.enabled = true;
             }));
-            
-            
-            Vector3 vec = transform.position;
-            if (_spriteRenderer.flipX)
-            {
-                vec.x -= 0.1f;
-                GameObject ph =Instantiate(pushHand,vec,Quaternion.Euler(0,180,0));
-                ph.GetComponent<Rigidbody2D>().AddForce(Vector2.left * pushForce,ForceMode2D.Impulse);
-                
-            }
-            else
-            {
-                vec.x += 0.1f;
-                GameObject ph =Instantiate(pushHand,vec,Quaternion.Euler(0,0,0));
-                ph.GetComponent<Rigidbody2D>().AddForce(Vector2.right * pushForce,ForceMode2D.Impulse);
-            }
-            skillReady = false;
+            InstantiatePushHand();
+            StartCoroutine(reload());
         }
-        
+    }
+
+    private void InstantiatePushHand()
+    {
+        Vector3 vec = transform.position;
+        if (_spriteRenderer.flipX)
+        {
+            vec.x -= 0.065f;
+            GameObject ph =Instantiate(pushHand,vec,Quaternion.Euler(0,180,0));
+            Physics2D.IgnoreCollision(this.GetComponent<Collider2D>(),ph.GetComponent<Collider2D>(),true); 
+            //플레이어가 생성한 스킬과 충돌 무시
+            ph.GetComponent<Rigidbody2D>().velocity = Vector2.left * pushForce;
+        }
+        else
+        {
+            vec.x += 0.065f;
+            GameObject ph =Instantiate(pushHand,vec,Quaternion.Euler(0,0,0));
+            Physics2D.IgnoreCollision(this.GetComponent<Collider2D>(),ph.GetComponent<Collider2D>(),true);
+            ph.GetComponent<Rigidbody2D>().velocity = Vector2.right * pushForce;
+        }
+        skillReady = false;
     }
     
-    
+    private IEnumerator reload()
+    {
+        gauge.SetActive(true);
+        _gagueAnimation.Play();
+        yield return new WaitForSeconds(10f);
+        skillReady = true;
+        gauge.SetActive(false);
+    }
+
     private IEnumerator waitThenCallback(float time, Action callback)
     {
         yield return new WaitForSeconds(time);

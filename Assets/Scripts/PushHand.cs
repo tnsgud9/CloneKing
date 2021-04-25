@@ -5,6 +5,8 @@ using UnityEngine;
 
 public class PushHand : MonoBehaviour
 {
+    public float destroyTime = 2f;
+    public float hitDestroyTime = 0.3f;
     private Rigidbody2D _rigidbody2D;
     private IEnumerator waitThenCallback(float time, Action callback)
     {
@@ -15,7 +17,7 @@ public class PushHand : MonoBehaviour
     private void Start()
     {
         _rigidbody2D = GetComponent<Rigidbody2D>();
-        StartCoroutine(waitThenCallback(3f, () =>
+        StartCoroutine(waitThenCallback(destroyTime, () =>
         {
             Destroy(this.gameObject);
         }));
@@ -24,26 +26,14 @@ public class PushHand : MonoBehaviour
     private void OnCollisionEnter2D(Collision2D other)
     {
         
-        Debug.Log(other.gameObject.name);
-        if (other.gameObject.layer == LayerMask.NameToLayer("TileMap"))
-        {
-            _rigidbody2D.velocity = Vector2.zero;
-            StopAllCoroutines();
-            StartCoroutine(waitThenCallback(0.3f, () =>
-            {
-                Destroy(this.gameObject);
-            }));
-        }
         if (other.gameObject.CompareTag("Player"))
         {
-            _rigidbody2D.velocity = Vector2.zero;
+            //_rigidbody2D.velocity = Vector2.zero; // 맞으면 이동이 멈춤
             StopAllCoroutines();
-            StartCoroutine(waitThenCallback(0.3f, () =>
+            StartCoroutine(waitThenCallback(hitDestroyTime, () =>
             {
                 Destroy(this.gameObject);
             }));
         }
-
-        
     }
 }
