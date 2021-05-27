@@ -44,8 +44,10 @@ public class PlayerJump : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKey(KeyCode.Space)) JumpReady();
-        if (Input.GetKeyUp(KeyCode.Space)) Jump();
+        if (Input.GetKey(KeyCode.Space)
+            && state != jumpState.Jump) JumpReady();
+        if (Input.GetKeyUp(KeyCode.Space) 
+            && state == jumpState.Ready) Jump();
     }
     private void Ground()
     {
