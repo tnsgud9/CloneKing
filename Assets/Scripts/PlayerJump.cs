@@ -11,15 +11,13 @@ public class PlayerJump : MonoBehaviour
     private Animator _animator;
     private SpriteRenderer _spriteRenderer;
     private Rigidbody2D _rigidbody;
-    private float _jumpForce;
-    private float _jumpAngle;
-    private bool groundCallback = true;
+    
+    private float _pressTime;
+    public bool _groundCallback = true;
 
 
     public Sprite jumpReadySprite;
     public Sprite jumpSprite;
-    public float jumpMaxForce = 10f;
-    public float jumpMinForce = 3f;
     
     
     public PhysicsMaterial2D defaultPhyMat;
@@ -48,11 +46,20 @@ public class PlayerJump : MonoBehaviour
             && state != jumpState.Jump) JumpReady();
         if (Input.GetKeyUp(KeyCode.Space) 
             && state == jumpState.Ready) Jump();
+        Debug.DrawRay(transform.position,Vector3.down*0.165f,Color.blue);
+        if (Physics2D.Raycast(transform.position, Vector2.down, 0.165f, 1 << LayerMask.NameToLayer("TileMap")) 
+            && _groundCallback)
+        {
+            Debug.DrawRay(transform.position,Vector3.down*0.165f,Color.red);
+            Ground();
+        }
+        
     }
     private void Ground()
     {
+        Debug.Log("Ground!!!!!!");
         state = jumpState.Ground;
-        Debug.Log("STATE : " + state);
+        //Debug.Log("STATE : " + state);
         _rigidbody.sharedMaterial = defaultPhyMat;
         _playerMove.enabled = true;
         _animator.enabled = true;
@@ -62,15 +69,19 @@ public class PlayerJump : MonoBehaviour
     private void JumpReady()
     {
         state = jumpState.Ready;
-        Debug.Log("STATE : "+state);
+        //Debug.Log("STATE : "+state);
         
         _playerMove.enabled = false;
         _animator.enabled = false;
+        _groundCallback = false;
+
         _spriteRenderer.sprite = jumpReadySprite;
         
         //버튼 누를때 각도 힘 조절 이벤트
-        _jumpForce = _jumpForce > jumpMaxForce ? jumpMaxForce : _jumpForce + (5f * Time.deltaTime);
-        
+        _pressTime += Time.deltaTime;
+        //Debug.Log("JUMP READY : "+ _pressTime);
+        //_jumpForce = _jumpForce > jumpMaxForce ? jumpMaxForce : _jumpForce + (5f * Time.deltaTime);
+
     }
 
     private void Jump()
@@ -82,39 +93,69 @@ public class PlayerJump : MonoBehaviour
         _animator.enabled = false;
         _spriteRenderer.sprite = jumpSprite;
         
+        
+        _pressTime = Mathf.Clamp(_pressTime, 0f, 1f); // 최소 0초에서 최대 1초 동안 점프 기준을 정함
+        //Debug.Log("Press Time : " + _pressTime);
+        float y = Mathf.Lerp(3f, 7f, _pressTime);
+        float x = Mathf.Lerp(1f, 4f, _pressTime);
+        //float y = Mathf.Clamp(_yJumpForce, 2f, 7f);
+        //float y = GetRatePer(jumpMinForce, jumpMaxForce, _jumpForce);
+        //Debug.Log(" JUMP : "+ y);
         // 점프 이벤트
         if (_spriteRenderer.flipX) // 왼쪽 보고 있을 때 
         {
-            _rigidbody.velocity = new Vector2(-1, 1) * _jumpForce;
+            //Debug.Log("Velocity Vector : "+ new Vector2(-x,y));
+            _rigidbody.velocity = new Vector2(-x, y);
+            //_rigidbody.velocity = new Vector2(-1, 1) * _jumpForce;
         }
         else // 오른쪽 보고 있을떄
         {
             
-            _rigidbody.velocity = new Vector2(1, 1) * _jumpForce;
+            //Debug.Log("Velocity Vector : "+ new Vector2(x,y));
+            _rigidbody.velocity = new Vector2(x, y);
+            //_rigidbody.velocity = new Vector2(1, 1) * _jumpForce;
         }
-        _jumpForce = jumpMinForce;
+
+        _pressTime = 0f;
         
         
         // callback Event 
-        groundCallback = false;
+        _groundCallback = false;
         StartCoroutine(waitThenCallback(0.1f, () =>
         {
-            groundCallback = true;
+            _groundCallback = true;
         }));
     }
 
     private void OnCollisionEnter2D(Collision2D other)
     {
+        Vector2 direction = other.GetContact(0).normal; 
+        if (direction.y >= 0.8f && _groundCallback)
+        {
+            Debug.Log("enter col!");
+            Ground();
+        }
+        /*
         foreach (ContactPoint2D hitPos in other.contacts)
         {
-            if (hitPos.normal.y >= 1f && groundCallback) Ground();
+            Vector2 direction = hitPos.normal;
+            if (direction.x == 1) print("“right”");
+            if (direction.x == -1) print("“left”");
+            if (direction.y == 1) print("“up”");
+            if (direction.y == -1) print("“down”");
         }
+        */
+        
+        
     }
     private void OnCollisionStay2D(Collision2D other)
     {
-        foreach (ContactPoint2D hitPos in other.contacts)
+        Vector2 direction = other.GetContact(0).normal; 
+        Debug.Log(direction);
+        if (direction.y >= 0.8f && _groundCallback)
         {
-            if (hitPos.normal.y >= 1f && groundCallback) Ground();
+            Debug.Log("stay col!");
+            Ground();
         }
     }
 

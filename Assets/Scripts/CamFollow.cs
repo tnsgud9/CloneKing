@@ -14,7 +14,7 @@ public class CamFollow : MonoBehaviour
     {
         Vector3 vec = target.position;
         vec.z = -10f;
-        //vec.x = 0f;
+        vec.x = 0f;
         this.transform.position = Vector3.Lerp(transform.position, vec, Time.deltaTime * smoothCamMove);
     }
 }
