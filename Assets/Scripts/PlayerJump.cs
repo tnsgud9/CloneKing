@@ -11,6 +11,7 @@ public class PlayerJump : MonoBehaviour
     private Animator _animator;
     private SpriteRenderer _spriteRenderer;
     private Rigidbody2D _rigidbody;
+    private AudioSource _audioSource;
     
     private float _pressTime;
     public bool _groundCallback = true;
@@ -23,11 +24,16 @@ public class PlayerJump : MonoBehaviour
     public PhysicsMaterial2D defaultPhyMat;
     public PhysicsMaterial2D bouncePhyMat;
 
+    public AudioClip jumpSound;
+    public AudioClip wallHitSound;
+    public AudioClip groundHitSound;
+
     public enum jumpState
     {
         Ready,
         Jump,
-        Ground
+        Ground,
+        Goal
     };
 
     [SerializeField] public jumpState state;
@@ -37,6 +43,7 @@ public class PlayerJump : MonoBehaviour
         _animator = GetComponent<Animator>();
         _playerMove = GetComponent<PlayerMove>();
         _rigidbody = GetComponent<Rigidbody2D>();
+        _audioSource = GetComponent<AudioSource>();
         state = jumpState.Ground;
     }
 
@@ -50,6 +57,7 @@ public class PlayerJump : MonoBehaviour
         if (Physics2D.Raycast(transform.position, Vector2.down, 0.165f, 1 << LayerMask.NameToLayer("TileMap")) 
             && _groundCallback)
         {
+            
             Debug.DrawRay(transform.position,Vector3.down*0.165f,Color.red);
             Ground();
         }
@@ -92,6 +100,9 @@ public class PlayerJump : MonoBehaviour
         _playerMove.enabled = false;
         _animator.enabled = false;
         _spriteRenderer.sprite = jumpSprite;
+
+        _audioSource.clip = jumpSound;
+        _audioSource.Play();
         
         
         _pressTime = Mathf.Clamp(_pressTime, 0f, 1f); // 최소 0초에서 최대 1초 동안 점프 기준을 정함
@@ -132,8 +143,16 @@ public class PlayerJump : MonoBehaviour
         Vector2 direction = other.GetContact(0).normal; 
         if (direction.y >= 0.8f && _groundCallback)
         {
+            _audioSource.clip = groundHitSound;
+            _audioSource.Play();
             Debug.Log("enter col!");
             Ground();
+        }
+        else
+        {
+            _audioSource.clip = wallHitSound;
+            _audioSource.Play();
+            
         }
         /*
         foreach (ContactPoint2D hitPos in other.contacts)

@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Event
   - TileMap
+  - Goal
   layers:
   - Default
   - TransparentFX
