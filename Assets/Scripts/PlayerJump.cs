@@ -106,25 +106,18 @@ public class PlayerJump : MonoBehaviour
         
         
         _pressTime = Mathf.Clamp(_pressTime, 0f, 1f); // 최소 0초에서 최대 1초 동안 점프 기준을 정함
-        //Debug.Log("Press Time : " + _pressTime);
+       
         float y = Mathf.Lerp(3f, 7f, _pressTime);
         float x = Mathf.Lerp(1f, 4f, _pressTime);
-        //float y = Mathf.Clamp(_yJumpForce, 2f, 7f);
-        //float y = GetRatePer(jumpMinForce, jumpMaxForce, _jumpForce);
-        //Debug.Log(" JUMP : "+ y);
+        
         // 점프 이벤트
         if (_spriteRenderer.flipX) // 왼쪽 보고 있을 때 
         {
-            //Debug.Log("Velocity Vector : "+ new Vector2(-x,y));
             _rigidbody.velocity = new Vector2(-x, y);
-            //_rigidbody.velocity = new Vector2(-1, 1) * _jumpForce;
         }
         else // 오른쪽 보고 있을떄
         {
-            
-            //Debug.Log("Velocity Vector : "+ new Vector2(x,y));
             _rigidbody.velocity = new Vector2(x, y);
-            //_rigidbody.velocity = new Vector2(1, 1) * _jumpForce;
         }
 
         _pressTime = 0f;

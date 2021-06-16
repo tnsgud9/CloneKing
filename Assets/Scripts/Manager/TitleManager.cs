@@ -42,11 +42,8 @@ namespace Manager
             //fadeSystem.textFadeOutRetro(startButton,0.1f,0.1f);
             fadeSystem.imageFadeOutRetro(exitButton,0.1f,0.25f);
             //fadeSystem.textFadeOutRetro(exitButton,0.1f,0.1f);
-            
         }
         
-
-
         public void GameStart()
         {
             startButton.GetComponent<Button>().enabled = false;
