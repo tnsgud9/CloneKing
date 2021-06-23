@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 namespace Manager
 {
-    public class PlayerManager : Photon.PunBehaviour
+    public class PlayerController : MonoBehaviour
     {
         private PlayerMove _playerMove;
         private PlayerPushHand _playerPushHand;
