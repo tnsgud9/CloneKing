@@ -16,7 +16,6 @@ namespace Manager
         private Animator _animator;
         private AudioSource _audioSource;
         
-        
         public GameObject carmera;
         public GameObject completeTexts;
         public Text timerText;
@@ -26,10 +25,15 @@ namespace Manager
         private static readonly int Goal = Animator.StringToHash("Goal");
 
         public AudioClip goalSound;
+
         void Awake()
         {
-            GameManager.instance.AddPlayer(this.gameObject);
-            if (!fadeSystem) fadeSystem = this.gameObject.AddComponent<FadeSystem>();
+            GameManager.instance.AddPlayer(gameObject);
+
+            if (fadeSystem == null)
+            {
+                fadeSystem = gameObject.AddComponent<FadeSystem>();
+            }
 
             carmera = GameObject.Find("Main Camera");
             carmera.GetComponent<CamFollow>().target = this.gameObject.transform;
@@ -39,7 +43,16 @@ namespace Manager
 
         private void Start()
         {
+            InitializeComponents();
+
             coroutine = GameTimer();
+            
+            completeTexts.SetActive(false);
+            StartCoroutine(coroutine);
+        }
+
+        private void InitializeComponents()
+        {
             _playerJump = GetComponent<PlayerJump>();
             _playerPushHand = GetComponent<PlayerPushHand>();
             _playerMove = GetComponent<PlayerMove>();
@@ -47,46 +60,63 @@ namespace Manager
             _boxCollider2D = GetComponent<BoxCollider2D>();
             _animator = GetComponent<Animator>();
             _audioSource = GetComponent<AudioSource>();
-            
-            Debug.Log("asdasdasdas");
-            completeTexts.SetActive(false);
-            StartCoroutine(coroutine);
+        }
+
+        private void Update()
+        {
+            DriveInput();
+        }
+
+        private void DriveInput()
+        {
+            if (Input.GetKey(KeyCode.Space))
+            {
+                _playerJump.PerformJump(JumpState.Ready);
+            }
+
+            if(Input.GetKeyUp(KeyCode.Space))
+            {
+                _playerJump.PerformJump(JumpState.Jump);
+            }
+
+        }
+
+        private void FinishGame()
+        {
+            _audioSource.clip = goalSound;
+            _audioSource.Play();
+
+           // _playerJump.state = JumpState.Goal;
+            _playerJump.enabled = false;
+            _playerPushHand.enabled = false;
+            _rigidbody2D.gravityScale = 0;
+            _boxCollider2D.enabled = false;
+            StartCoroutine(waitThenCallback(0.1f, () =>
+            {
+                _playerMove.enabled = false;
+                _animator.SetBool("isMove", false);
+                _animator.SetTrigger(Goal);
+            }));
+            StopCoroutine(GameTimer());
+
+            completeTexts.transform.GetChild(1).GetComponent<Text>().text =
+                "Clear Time : " + hour + ":" + minute + ":" + second;
+            completeTexts.SetActive(true);
+
+            Text[] texts = completeTexts.transform.GetComponentsInChildren<Text>();
+            foreach (Text e in texts)
+            {
+                Debug.Log(e);
+                fadeSystem.textFadeOutRetro(e, 0.1f, 0.25f);
+            }
+            StopCoroutine(coroutine);
         }
 
         private void OnTriggerEnter2D(Collider2D other)
         {
-            if (other.gameObject.tag == "Goal")
+            if (other.gameObject.tag.Equals("Goal"))
             {
-                Debug.Log("Reach to Goal");
-
-                _audioSource.clip = goalSound;
-                _audioSource.Play();
-                
-                _playerJump.state = PlayerJump.jumpState.Goal;
-                _playerJump.enabled = false;
-                _playerPushHand.enabled = false;
-                _rigidbody2D.gravityScale = 0;
-                _boxCollider2D.enabled = false;
-                StartCoroutine(waitThenCallback(0.1f, () =>
-                {
-                    _playerMove.enabled = false;
-                    _animator.SetBool("isMove",false);
-                    _animator.SetTrigger(Goal);
-                }));
-                StopCoroutine(GameTimer());
-
-                completeTexts.transform.GetChild(1).GetComponent<Text>().text =
-                    "Clear Time : " + hour + ":" + minute + ":" + second;
-                completeTexts.SetActive(true);
-                
-                Text[] texts = completeTexts.transform.GetComponentsInChildren<Text>();
-                foreach (Text e in texts)
-                {
-                    Debug.Log(e);
-                    fadeSystem.textFadeOutRetro(e,0.1f,0.25f);
-                }
-                StopCoroutine(coroutine);
-
+                FinishGame();
             }
         }
 

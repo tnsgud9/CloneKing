@@ -13,12 +13,11 @@ public class PlayerJump : MonoBehaviour
     private AudioSource _audioSource;
     
     private float _pressTime;
-    public bool _groundCallback = true;
-
+    private JumpState _currentState;
+    
 
     public Sprite jumpReadySprite;
     public Sprite jumpSprite;
-    
     
     public PhysicsMaterial2D defaultPhyMat;
     public PhysicsMaterial2D bouncePhyMat;
@@ -27,73 +26,106 @@ public class PlayerJump : MonoBehaviour
     public AudioClip wallHitSound;
     public AudioClip groundHitSound;
 
-    public enum jumpState
-    {
-        Ready,
-        Jump,
-        Ground,
-        Goal
-    };
-
-    [SerializeField] public jumpState state;
     private void Start()
+    {
+        InitializeComponents();
+
+        _currentState = JumpState.Ground;
+    }
+
+    private void InitializeComponents()
     {
         _spriteRenderer = GetComponent<SpriteRenderer>();
         _animator = GetComponent<Animator>();
         _playerMove = GetComponent<PlayerMove>();
         _rigidbody = GetComponent<Rigidbody2D>();
         _audioSource = GetComponent<AudioSource>();
-        state = jumpState.Ground;
     }
 
     private void Update()
     {
-        if (Input.GetKey(KeyCode.Space)
-            && state != jumpState.Jump) JumpReady();
-        if (Input.GetKeyUp(KeyCode.Space) 
-            && state == jumpState.Ready) Jump();
-        Debug.DrawRay(transform.position,Vector3.down*0.165f,Color.blue);
-        if (Physics2D.Raycast(transform.position, Vector2.down, 0.165f, 1 << LayerMask.NameToLayer("TileMap")) 
-            && _groundCallback)
+        DriveJump();
+    }
+
+    private void DriveJump()
+    {
+        switch (_currentState)
         {
-            
-            Debug.DrawRay(transform.position,Vector3.down*0.165f,Color.red);
+            case JumpState.Ready:
+                _pressTime += Time.deltaTime;
+                break;
+
+            case JumpState.Falling:
+                Falling();
+                break;
+        }
+    }
+
+    public bool PerformJump( JumpState state )
+    {
+        switch( state)
+        {
+            case JumpState.Ready:
+                if(_currentState.Equals(JumpState.Ground))
+                {
+                    JumpReady();
+                    return true;
+                }
+                break;
+
+            case JumpState.Jump:
+                if(_currentState.Equals(JumpState.Ready))
+                {
+                    Jump();
+                    return true;
+                }
+                break;
+
+            default:
+                return false;
+        }
+
+        return false;
+    }
+
+    private void Falling()
+    {
+        const string tileMapLayerName = "TileMap";
+        int tileLayerIndex = 1 << LayerMask.NameToLayer(tileMapLayerName);
+
+        if (Physics2D.Raycast(transform.position, Vector2.down, 0.165f, tileLayerIndex))
+        {
             Ground();
         }
-        
     }
+
     private void Ground()
     {
-        state = jumpState.Ground;
-        //Debug.Log("STATE : " + state);
+        _currentState = JumpState.Ground;
+        
         _rigidbody.sharedMaterial = defaultPhyMat;
         _playerMove.enabled = true;
         _animator.enabled = true;
         _rigidbody.velocity = Vector2.zero;
-        
+
+        _audioSource.clip = groundHitSound;
+        _audioSource.Play();
     }
+
     private void JumpReady()
     {
-        state = jumpState.Ready;
-        //Debug.Log("STATE : "+state);
-        
+        _currentState = JumpState.Ready;
+
         _playerMove.enabled = false;
         _animator.enabled = false;
-        _groundCallback = false;
 
         _spriteRenderer.sprite = jumpReadySprite;
-        
-        //버튼 누를때 각도 힘 조절 이벤트
-        _pressTime += Time.deltaTime;
-        //Debug.Log("JUMP READY : "+ _pressTime);
-        //_jumpForce = _jumpForce > jumpMaxForce ? jumpMaxForce : _jumpForce + (5f * Time.deltaTime);
-
     }
 
     private void Jump()
     {
-        state = jumpState.Jump;
-        Debug.Log("STATE : "+state);
+        _currentState = JumpState.Jump;
+
         _rigidbody.sharedMaterial = bouncePhyMat;
         _playerMove.enabled = false;
         _animator.enabled = false;
@@ -101,7 +133,6 @@ public class PlayerJump : MonoBehaviour
 
         _audioSource.clip = jumpSound;
         _audioSource.Play();
-        
         
         _pressTime = Mathf.Clamp(_pressTime, 0f, 1f); // 최소 0초에서 최대 1초 동안 점프 기준을 정함
        
@@ -119,26 +150,17 @@ public class PlayerJump : MonoBehaviour
         }
 
         _pressTime = 0f;
-        
-        
-        // callback Event 
-        _groundCallback = false;
-        StartCoroutine(waitThenCallback(0.1f, () =>
-        {
-            _groundCallback = true;
-        }));
     }
 
     private void OnCollisionEnter2D(Collision2D other)
     {
-        Vector2 direction = other.GetContact(0).normal;
-        Debug.Log(direction.ToString());
+        _currentState = JumpState.Falling;
 
-        if (direction.y >= 0.8f && _groundCallback)
+        Vector2 contact_normal = other.GetContact(0).normal;
+        _rigidbody.velocity = Vector2.Reflect(-other.relativeVelocity, contact_normal);
+
+        if (contact_normal.y >= 0.8f)
         {
-            _audioSource.clip = groundHitSound;
-            _audioSource.Play();
-            Debug.Log("enter col!");
             Ground();
         }
         else
@@ -146,58 +168,6 @@ public class PlayerJump : MonoBehaviour
             _audioSource.clip = wallHitSound;
             _audioSource.Play();
         }
-        /*
-        foreach (ContactPoint2D hitPos in other.contacts)
-        {
-            Vector2 direction = hitPos.normal;
-            if (direction.x == 1) print("“right”");
-            if (direction.x == -1) print("“left”");
-            if (direction.y == 1) print("“up”");
-            if (direction.y == -1) print("“down”");
-        }
-        */
-        
-        
-    }
-    /*private void OnCollisionStay2D(Collision2D other)
-    {
-        Vector2 direction = other.GetContact(0).normal; 
-        Debug.Log(direction);
-        if (direction.y >= 0.8f && _groundCallback)
-        {
-            Debug.Log("stay col!");
-            Ground();
-        }
-    }*/
 
-    
-    private IEnumerator waitThenCallback(float time, Action callback)
-    {
-        yield return new WaitForSeconds(time);
-        callback();
     }
-    //=================================================================================================================
-    public static float Vec2ToAngle(Vector2 dir)
-    {
-        return Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
-    }
-
-    public static Vector2 AngleToVec2(float angle)
-    {
-        return new Vector2(Mathf.Sin(angle), Mathf.Sin(angle));
-    }
-    public static Vector2 RadianToVector2(float radian)
-    {
-        return new Vector2(Mathf.Cos(radian), Mathf.Sin(radian));
-    }
-
-    public static float GetRatePer(float min, float max, float value)
-    {
-        return (value - min) / (max-min); 
-    }
-    
-    
-    
 }
-
-
