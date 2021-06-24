@@ -14,7 +14,8 @@ public class PlayerJump : MonoBehaviour
     
     private float _pressTime;
     private JumpState _currentState;
-    
+
+    public float reflectForce = 0.5f;
 
     public Sprite jumpReadySprite;
     public Sprite jumpSprite;
@@ -157,7 +158,7 @@ public class PlayerJump : MonoBehaviour
         _currentState = JumpState.Falling;
 
         Vector2 contact_normal = other.GetContact(0).normal;
-        _rigidbody.velocity = Vector2.Reflect(-other.relativeVelocity, contact_normal);
+        _rigidbody.velocity = Vector2.Reflect(-other.relativeVelocity, contact_normal) * reflectForce;
 
         if (contact_normal.y >= 0.8f)
         {
