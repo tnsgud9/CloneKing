@@ -42,7 +42,8 @@ namespace Manager
             {
                 fadeSystem = gameObject.AddComponent<FadeSystem>();
             }
-
+            
+            // Todo: GameObject.Find 함수 변경 필요 ( 느리다 )
             carmera = GameObject.Find("Main Camera");
             carmera.GetComponent<CamFollow>().target = this.gameObject.transform;
             completeTexts = carmera.transform.GetChild(0).transform.Find("Complete Objects").gameObject;
@@ -109,6 +110,8 @@ namespace Manager
         }
         
         
+        //Todo: 타이머 GameManager로 이전
+        
         private void FinishGame()
         {
             _audioSource.clip = goalSound;
@@ -144,7 +147,7 @@ namespace Manager
         {
             if (other.gameObject.tag.Equals("Goal"))
             {
-                FinishGame();
+                GameManager.Instance.ReachGoalEvent(this.gameObject);
             }
         }
 
@@ -160,7 +163,8 @@ namespace Manager
                 yield return new WaitForSeconds(1f);
             }
         }
-        
+
+
         private IEnumerator waitThenCallback(float time, Action callback)
         {
             yield return new WaitForSeconds(time);
