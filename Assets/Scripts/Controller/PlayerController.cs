@@ -74,6 +74,7 @@ namespace Manager
         {
             JumpInput();
             MoveInput();
+            PushInput();
         }
 
         private void JumpInput()
@@ -99,6 +100,13 @@ namespace Manager
             }
         }
         
+        private void PushInput()
+        {
+            if (Input.GetKeyDown(KeyCode.LeftControl))
+            {
+                _playerPushHand.PushEvent();
+            }
+        }
         
         
         private void FinishGame()

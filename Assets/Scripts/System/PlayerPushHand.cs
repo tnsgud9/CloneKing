@@ -29,10 +29,9 @@ public class PlayerPushHand : MonoBehaviour
         _playerMove = GetComponent<PlayerMove>();
     }
 
-    // 이벤트는 Update문에 넣으면 된다.
-    private void Update()
+    public void PushEvent()
     {
-        if (Input.GetKeyDown(KeyCode.LeftControl) && skillReady)
+        if (skillReady)
         {
             _animator.enabled = false;
             _spriteRenderer.sprite = playerPushSprite;
