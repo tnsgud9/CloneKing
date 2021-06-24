@@ -10,7 +10,6 @@ public class PlayerMove : MonoBehaviour
     public float speed = 1f;
     public AudioClip walkSound;
 
-    public bool reachGoalPoint = false;
     //private
     private SpriteRenderer _spriteRenderer;
     private Animator _animator;
@@ -21,40 +20,43 @@ public class PlayerMove : MonoBehaviour
 
     void Start()
     {
+        InitializeComponents();
+    }
+
+    private void InitializeComponents()
+    {
         _spriteRenderer = GetComponent<SpriteRenderer>();
         _animator = GetComponent<Animator>();
         _rigidbody2D = GetComponent<Rigidbody2D>();
         _audioSource = GetComponent<AudioSource>();
     }
 
-    void Update()
+
+    //MoveEvent는 PlayerController에서 호출됨.
+    public void MoveEvent(float horizontal)
     {
-        _horizontal = Input.GetAxisRaw("Horizontal");
-        AnimationUpdate();
-        MoveUpdate();
+        MoveUpdate(horizontal);
+        AnimationUpdate(horizontal);
     }
 
-    private void AnimationUpdate()
+    private void AnimationUpdate(float horizontal)
     {
-        if(_horizontal == 0)
+        if(horizontal == 0)
             _animator.SetBool("isMove",false);
         else
             _animator.SetBool("isMove",true);
 
-        if (_horizontal == -1)
+        if (horizontal == -1)
             _spriteRenderer.flipX = true;
 
-        if (_horizontal == 1)
+        if (horizontal == 1)
             _spriteRenderer.flipX = false;
     }
-
-    private void MoveUpdate()
+    
+    private void MoveUpdate(float horizontal)
     {
-        
-
-        if (_horizontal == -1)
+        if (horizontal == -1)
         {
-            //_rigidbody2D.MovePosition(new Vector2(transform.position.x,transform.position.y) + Vector2.left * (Time.deltaTime * speed));
             transform.position += Vector3.left * (Time.deltaTime * speed);
             if (!_audioSource.isPlaying)
             {
@@ -65,10 +67,9 @@ public class PlayerMove : MonoBehaviour
             return;
         }
 
-        if (_horizontal == 1)
+        if (horizontal == 1)
         {
             transform.position += Vector3.right * (Time.deltaTime * speed);
-            //_rigidbody2D.MovePosition(new Vector2(transform.position.x,transform.position.y) + Vector2.right * (Time.deltaTime * speed));
             if (!_audioSource.isPlaying)
             {
                 _audioSource.clip = walkSound;

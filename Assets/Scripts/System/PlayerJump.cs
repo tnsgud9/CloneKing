@@ -62,7 +62,8 @@ public class PlayerJump : MonoBehaviour
         }
     }
 
-    public bool PerformJump( JumpState state )
+    //JumpEvent는 PlayerController에서 호출됨.
+    public bool JumpEvent( JumpState state )
     {
         switch( state)
         {
@@ -151,6 +152,12 @@ public class PlayerJump : MonoBehaviour
         }
 
         _pressTime = 0f;
+    }
+
+    public bool isJumped()
+    {
+        if (_currentState != JumpState.Ground) return true;
+        return false;
     }
 
     private void OnCollisionEnter2D(Collision2D other)

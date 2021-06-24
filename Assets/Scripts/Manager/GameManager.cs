@@ -4,24 +4,40 @@ using UnityEngine;
 
 namespace Manager
 {
-    public class GameManager : MonoBehaviour
+    public class Singleton<T> : MonoBehaviour where T : MonoBehaviour
     {
-
-        [SerializeField] private List<GameObject> players;
-        public static GameManager instance;
-    
-        private void Awake()
+        private static T _instance = null;
+        
+        public static T Instance
         {
-            if (!instance)
+            get
             {
-                instance = this;
-                DontDestroyOnLoad(this.gameObject);
-            }
-            else
-            {
-                Destroy(this);
+                if( _instance == null)
+                {
+                    _instance = (T)FindObjectOfType<T>();
+
+                    if( _instance == null)
+                    {
+                        var go = new GameObject();
+                        var component = go.AddComponent<T>();
+
+                        go.name = typeof(T).ToString();
+
+                        DontDestroyOnLoad(go);
+
+                        _instance = component;
+                    }
+                }
+
+                return _instance;
             }
         }
+    }
+    
+    public class GameManager : Singleton<GameManager>
+    {
+        [SerializeField] private List<GameObject> players;
+   
 
         public void AddPlayer(GameObject player)
         {

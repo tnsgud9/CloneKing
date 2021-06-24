@@ -7,6 +7,8 @@ namespace Manager
 {
     public class PlayerController : MonoBehaviour
     {
+        
+        //Todo : 불필요한 변수들 제거 필요.
         private PlayerMove _playerMove;
         private PlayerPushHand _playerPushHand;
         private PlayerJump _playerJump;
@@ -19,6 +21,8 @@ namespace Manager
         public GameObject carmera;
         public GameObject completeTexts;
         public Text timerText;
+        
+        //Todo: 타이머 기능 GameManager.cs로 이동 필요.
         public int timer = 0;
         private int hour=0, minute=0, second=0;
         private IEnumerator coroutine;
@@ -26,9 +30,13 @@ namespace Manager
 
         public AudioClip goalSound;
 
+        // MoveInput Variables
+        private float horizontal = 0f;
+        
+        
         void Awake()
         {
-            GameManager.instance.AddPlayer(gameObject);
+            GameManager.Instance.AddPlayer(this.gameObject);
 
             if (fadeSystem == null)
             {
@@ -64,23 +72,35 @@ namespace Manager
 
         private void Update()
         {
-            DriveInput();
+            JumpInput();
+            MoveInput();
         }
 
-        private void DriveInput()
+        private void JumpInput()
         {
             if (Input.GetKey(KeyCode.Space))
             {
-                _playerJump.PerformJump(JumpState.Ready);
+                _playerJump.JumpEvent(JumpState.Ready);
             }
 
             if(Input.GetKeyUp(KeyCode.Space))
             {
-                _playerJump.PerformJump(JumpState.Jump);
+                _playerJump.JumpEvent(JumpState.Jump);
             }
 
         }
 
+        private void MoveInput()
+        {
+            if (!_playerJump.isJumped())
+            {
+                horizontal = Input.GetAxisRaw("Horizontal");
+                _playerMove.MoveEvent(horizontal);
+            }
+        }
+        
+        
+        
         private void FinishGame()
         {
             _audioSource.clip = goalSound;
