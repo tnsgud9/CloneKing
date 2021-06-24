@@ -20,8 +20,13 @@ public class PlayerPushHand : MonoBehaviour
     private Animation _gagueAnimation;
     private void Start()
     {
+        InitializeComponents();
+    }
+
+    private void InitializeComponents()
+    {
         //주의!! player가 갖고 있는 reload bar의 구성이 변경되면 오류가 발생할 수 있음.
-        _gagueAnimation = gauge.transform.GetChild(0).transform.GetChild(1).GetComponent<Animation>(); 
+        _gagueAnimation = gauge.transform.GetChild(0).transform.GetChild(1).GetComponent<Animation>();
         gauge.SetActive(false);
         _spriteRenderer = GetComponent<SpriteRenderer>();
         _animator = GetComponent<Animator>();
