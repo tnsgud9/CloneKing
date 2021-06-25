@@ -36,8 +36,6 @@ public class FadeSystem : MonoBehaviour
 
     #endregion
 
-
-
     #region Sprite Fade
     public void spriteFadeIn(SpriteRenderer sprite, float fadeTime)
     {
@@ -134,8 +132,6 @@ public class FadeSystem : MonoBehaviour
     
     #endregion
     
-    
-    
     #region Text Fade
     public void textFadeIn(Text text, float fadeTime)
     {
@@ -198,7 +194,4 @@ public class FadeSystem : MonoBehaviour
     }
     #endregion
 
-
-    
-    
 }

@@ -40,6 +40,9 @@ namespace Manager
     {
         [SerializeField] private List<GameObject> players;
         [SerializeField] private Text timeText;
+
+        public GameObject player;
+        
         
         #region Timer Variables
         private IEnumerator _gameTimer;
@@ -54,8 +57,7 @@ namespace Manager
             InitializeComponents();
             _gameTimer = TimeCoroutine();
             StartCoroutine(_gameTimer);
-        
-
+            SpawnPlayer(); // Todo: 차후 네트워크 기능 추가 이후에는 변경해주세요.
         }
 
         private void InitializeComponents()
@@ -78,6 +80,14 @@ namespace Manager
             }
         }
         
+        //  Todo: 네트워크 접속이 될때 플레이어 생성 함수를 호출하면 될거 같습니다.
+        public void SpawnPlayer()
+        {
+            StartCoroutine(waitThenCallback(1f,() =>
+            {
+                Instantiate(player);
+            }));
+        }
 
         private IEnumerator TimeCoroutine()
         {
@@ -92,5 +102,13 @@ namespace Manager
                 
             }
         }
+        //====
+        private IEnumerator waitThenCallback(float time, Action callback)
+        {
+            yield return new WaitForSeconds(time);
+            callback();
+        }
     }
+    
+    
 }

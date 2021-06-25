@@ -165,7 +165,7 @@ public class PlayerJump : MonoBehaviour
         _currentState = JumpState.Falling;
 
         Vector2 contact_normal = other.GetContact(0).normal;
-        _rigidbody.velocity = Vector2.Reflect(-other.relativeVelocity, contact_normal) * reflectForce;
+        //_rigidbody.velocity = Vector2.Reflect(-other.relativeVelocity, contact_normal) * reflectForce;
 
         if (contact_normal.y >= 0.8f)
         {
