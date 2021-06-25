@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Manager
 {
@@ -38,26 +39,29 @@ namespace Manager
     public class GameManager : Singleton<GameManager>
     {
         [SerializeField] private List<GameObject> players;
-        
+        [SerializeField] private Text timeText;
         
         #region Timer Variables
-        private IEnumerator Timer;
-        private int timeCount = 0;
-        private int hour=0, minute=0, second=0;
+        private IEnumerator _gameTimer;
+        public int timeCount = 0;
+        private int _hour=0, _minute=0, _second=0;
         #endregion
         
         // Comment : 타이머의 관련된 변수는 추후에 networkManager에서 관리가 필요합니다.
         //           접속시점이 기준이 아님.
-
-
         private void Start()
         {
-            Timer = TimeCoroutine();
-            StartCoroutine(Timer);
+            InitializeComponents();
+            _gameTimer = TimeCoroutine();
+            StartCoroutine(_gameTimer);
+        
 
         }
-        
-        
+
+        private void InitializeComponents()
+        {
+        }
+
 
         // PlayerController.cs의 void start()에서 추가 됩니다.
         public void AddPlayer(GameObject player)
@@ -65,27 +69,27 @@ namespace Manager
             players.Add(player);
         }
         
-        
-        
         public void ReachGoalEvent(GameObject player)
         {
+            StopCoroutine(_gameTimer);
             foreach (GameObject obj in players)
             {
                 obj.GetComponent<PlayerController>().enabled = false;
             }
         }
-
         
+
         private IEnumerator TimeCoroutine()
         {
             while (true)
             {
                 timeCount++;
-                hour = (timeCount%(60*60*24))/(60*60); 
-                minute = (timeCount%(60*60))/(60);
-                second = timeCount%(60);
-                //timerText.text = hour + ":" + minute + ":" + second;
+                _hour = (timeCount%(60*60*24))/(60*60); 
+                _minute = (timeCount%(60*60))/(60);
+                _second = timeCount%(60);
+                timeText.text = _hour + ":" + _minute + ":" + _second;
                 yield return new WaitForSeconds(1f);
+                
             }
         }
     }
