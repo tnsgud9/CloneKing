@@ -2,50 +2,24 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using Photon.Realtime;
-using Photon;
 
-public class LobbyManager : Photon.PunBehaviour
+
+public class LobbyManager : Manager.Singleton<LobbyManager>
 {
-    private string _gameVersion = "Temp";
     private string _room_Name = string.Empty;
 
-    public Text RoomNameText;
-    public Button RoomJoinButton;
+    public InputField roomNameInputField;
 
-    public Text MessageBoxText;
-    public Button JoinButton;
+    public Text messageBoxText;
+    public Button joinButton;
+    public Button createRoomButton;
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        PhotonNetwork.gameVersion = _gameVersion;
-
-        PhotonNetwork.ConnectUsingSettings(_gameVersion);
-
-        UpdateNetworkWidget();
-    }
-
-    public override void OnConnectedToMaster()
-    {
-        UpdateNetworkWidget();
-
-        base.OnConnectedToMaster();
-    }
-
-    public override void OnDisconnectedFromPhoton()
-    {
-        UpdateNetworkWidget();
-
-        base.OnDisconnectedFromPhoton();
-    }
-
-    private void UpdateNetworkWidget()
+    public void UpdateConnectionWidgets()
     {
         string connection_msg = PhotonNetwork.connectionState.ToString();
         bool button_enable = true;
 
-        switch(PhotonNetwork.connectionState)
+        switch (PhotonNetwork.connectionState)
         {
             case ConnectionState.Connecting:
             case ConnectionState.Disconnected:
@@ -54,25 +28,24 @@ public class LobbyManager : Photon.PunBehaviour
                 break;
         }
 
-        MessageBoxText.text = connection_msg;
-        JoinButton.interactable = button_enable;
-        JoinButton.onClick.AddListener(JoinLobby);
+        // UI Update
+        messageBoxText.text = connection_msg;
+        joinButton.interactable = button_enable;
+        createRoomButton.interactable = button_enable;
+
+        // Bind UI Event 
+        joinButton.onClick.AddListener(OnClickedJoinButton);
+        createRoomButton.onClick.AddListener(OnClickedCreateRoomButton);
     }
 
-
-    private void JoinLobby()
+    private void OnClickedJoinButton()
     {
-        PhotonNetwork.JoinLobby();
+        NetworkManager.Instance.JoinRoom(roomNameInputField.text);
     }
 
-    private void JoinRoom( string _room_name)
+    private void OnClickedCreateRoomButton()
     {
-        PhotonNetwork.JoinRoom(_room_name);
+        NetworkManager.Instance.CreateRoom(roomNameInputField.text);
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 }

@@ -2,10 +2,11 @@ using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
+using Photon;
 
 namespace Manager
 {
-    public class PlayerController : MonoBehaviour
+    public class PlayerController : Photon.PunBehaviour, IPunObservable
     {
         
         //Todo : 불필요한 변수들 제거 필요.
@@ -32,8 +33,12 @@ namespace Manager
 
         // MoveInput Variables
         private float horizontal = 0f;
-        
-        
+
+        public  void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+        {
+
+        }
+
         void Awake()
         {
             GameManager.Instance.AddPlayer(this.gameObject);
@@ -42,39 +47,59 @@ namespace Manager
             {
                 fadeSystem = gameObject.AddComponent<FadeSystem>();
             }
-
-            carmera = GameObject.Find("Main Camera");
-            carmera.GetComponent<CamFollow>().target = this.gameObject.transform;
-            completeTexts = carmera.transform.GetChild(0).transform.Find("Complete Objects").gameObject;
-            timerText = carmera.transform.GetChild(0).transform.Find("timer text").gameObject.GetComponent<Text>();
+            
+            if( photonView.isMine)
+            {
+                carmera = GameObject.Find("Main Camera");
+                carmera.GetComponent<CamFollow>().target = this.gameObject.transform;
+                completeTexts = carmera.transform.GetChild(0).transform.Find("Complete Objects").gameObject;
+                timerText = carmera.transform.GetChild(0).transform.Find("timer text").gameObject.GetComponent<Text>();
+            }
         }
 
         private void Start()
         {
             InitializeComponents();
 
-            coroutine = GameTimer();
-            
-            completeTexts.SetActive(false);
-            StartCoroutine(coroutine);
+            if (photonView.isMine)
+            {
+                coroutine = GameTimer();
+
+                completeTexts.SetActive(false);
+                StartCoroutine(coroutine);
+            }
         }
 
         private void InitializeComponents()
         {
             _playerJump = GetComponent<PlayerJump>();
-            _playerPushHand = GetComponent<PlayerPushHand>();
+            _playerPushHand = GetComponent<PlayerPushHand>();   
             _playerMove = GetComponent<PlayerMove>();
             _rigidbody2D = GetComponent<Rigidbody2D>();
             _boxCollider2D = GetComponent<BoxCollider2D>();
             _animator = GetComponent<Animator>();
             _audioSource = GetComponent<AudioSource>();
+
+            if( !photonView.isMine)
+            {
+                _playerJump.enabled = false;
+                _playerMove.enabled = false;
+             //   _boxCollider2D.enabled = false;
+
+              //  Destroy(_rigidbody2D);
+            }
         }
 
         private void Update()
         {
+            if (!photonView.isMine)
+                return;
+
+
             JumpInput();
             MoveInput();
         }
+
 
         private void JumpInput()
         {
