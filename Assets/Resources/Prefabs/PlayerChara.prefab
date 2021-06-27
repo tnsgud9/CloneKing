@@ -87,15 +87,18 @@ GameObject:
   - component: {fileID: 4995436199316367702}
   - component: {fileID: 4995436199316367701}
   - component: {fileID: 4995436199316367689}
-  - component: {fileID: 4995436199316367691}
   - component: {fileID: 4995436199316367693}
   - component: {fileID: 4995436199316367690}
   - component: {fileID: 4995436199316367692}
   - component: {fileID: 4995436199316367688}
   - component: {fileID: 4995436199316367694}
   - component: {fileID: 4995436199316367695}
+  - component: {fileID: 4382148645203520115}
+  - component: {fileID: 604843024966844369}
+  - component: {fileID: -4261163788167067914}
+  - component: {fileID: -3035910869275678855}
   m_Layer: 8
-  m_Name: Player
+  m_Name: PlayerChara
   m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -208,22 +211,6 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 1
   m_Constraints: 4
---- !u!58 &4995436199316367691
-CircleCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4995436199316367700}
-  m_Enabled: 0
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: 0, y: -0.025}
-  serializedVersion: 2
-  m_Radius: 0.12
 --- !u!61 &4995436199316367693
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -264,7 +251,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   speed: 1
   walkSound: {fileID: 8300000, guid: b97fda213bd8c404d810c5e98adde04f, type: 3}
-  reachGoalPoint: 0
 --- !u!114 &4995436199316367692
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -277,7 +263,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2d5d13e6e915e8e4db51a58a18862c5b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _groundCallback: 1
+  reflectForce: 0.5
   jumpReadySprite: {fileID: 21300000, guid: 9dbb8ae368d518c40b06a3d97cc60fde, type: 3}
   jumpSprite: {fileID: 21300000, guid: 320f4eb52e227b446830a1f6fd691fca, type: 3}
   defaultPhyMat: {fileID: 6200000, guid: 1406da4bb76b7a94aa633e205aab222d, type: 2}
@@ -285,7 +271,6 @@ MonoBehaviour:
   jumpSound: {fileID: 8300000, guid: b1a3d57a4a9edd64ea83e6d4d6ac665f, type: 3}
   wallHitSound: {fileID: 8300000, guid: 0303672d54c355b47b9e4e8178970194, type: 3}
   groundHitSound: {fileID: 8300000, guid: 71f37893945ba624994f81b93dc804fe, type: 3}
-  state: 0
 --- !u!114 &4995436199316367688
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -416,6 +401,152 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &4382148645203520115
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4995436199316367700}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ownerId: 0
+  group: 0
+  OwnerShipWasTransfered: 0
+  prefixBackup: -1
+  synchronization: 3
+  onSerializeTransformOption: 3
+  onSerializeRigidBodyOption: 2
+  ownershipTransfer: 0
+  ObservedComponents:
+  - {fileID: 604843024966844369}
+  - {fileID: -4261163788167067914}
+  - {fileID: 4995436199316367694}
+  - {fileID: -3035910869275678855}
+  ObservedComponentsFoldoutOpen: 1
+  viewIdField: 0
+  instantiationId: -1
+  currentMasterID: -1
+  isRuntimeInstantiated: 0
+--- !u!114 &604843024966844369
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4995436199316367700}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 627855c7f81362d41938ffe0b1475957, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_PositionModel:
+    SynchronizeEnabled: 1
+    TeleportEnabled: 1
+    TeleportIfDistanceGreaterThan: 1
+    InterpolateOption: 4
+    InterpolateMoveTowardsSpeed: 2
+    InterpolateLerpSpeed: 4
+    InterpolateMoveTowardsAcceleration: 2
+    InterpolateMoveTowardsDeceleration: 2
+    InterpolateSpeedCurve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: -1
+        value: 0
+        inSlope: 0
+        outSlope: Infinity
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      - serializedVersion: 3
+        time: 0
+        value: 1
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      - serializedVersion: 3
+        time: 1
+        value: 1
+        inSlope: 0
+        outSlope: 1
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      - serializedVersion: 3
+        time: 4
+        value: 4
+        inSlope: 1
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    ExtrapolateOption: 1
+    ExtrapolateSpeed: 1
+    ExtrapolateIncludingRoundTripTime: 1
+    ExtrapolateNumberOfStoredPositions: 1
+    DrawErrorGizmo: 1
+  m_RotationModel:
+    SynchronizeEnabled: 1
+    InterpolateOption: 1
+    InterpolateRotateTowardsSpeed: 180
+    InterpolateLerpSpeed: 5
+  m_ScaleModel:
+    SynchronizeEnabled: 0
+    InterpolateOption: 0
+    InterpolateMoveTowardsSpeed: 1
+    InterpolateLerpSpeed: 0
+--- !u!114 &-4261163788167067914
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4995436199316367700}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b8c4a61274f60b4ea5fb4299cfdbf14, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ShowLayerWeightsInspector: 1
+  ShowParameterInspector: 1
+  m_SynchronizeParameters:
+  - Type: 4
+    SynchronizeType: 2
+    Name: isMove
+  - Type: 9
+    SynchronizeType: 1
+    Name: Goal
+  m_SynchronizeLayers:
+  - SynchronizeType: 1
+    LayerIndex: 0
+--- !u!114 &-3035910869275678855
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4995436199316367700}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0e7cb724808c322458aa4d15f5035fa9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_SynchronizeVelocity: 1
+  m_SynchronizeAngularVelocity: 1
 --- !u!1 &4995436199710030281
 GameObject:
   m_ObjectHideFlags: 0
