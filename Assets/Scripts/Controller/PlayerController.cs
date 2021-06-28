@@ -3,187 +3,213 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 using Photon;
+using Photon.Realtime;
 
-namespace Manager
+public class PlayerController : Photon.PunBehaviour, IPunObservable
 {
-    public class PlayerController : Photon.PunBehaviour, IPunObservable
+        
+    //Todo : 불필요한 변수들 제거 필요.
+    private PlayerMove _playerMove;
+    private PlayerPushHand _playerPushHand;
+    private PlayerJump _playerJump;
+    private Rigidbody2D _rigidbody2D;
+    private BoxCollider2D _boxCollider2D;
+    private FadeSystem fadeSystem;
+    private Animator _animator;
+    private AudioSource _audioSource;
+    private SpriteRenderer _spriteRenderer = null;
+        
+    public GameObject carmera;
+    public GameObject completeTexts;
+    public Text timerText;
+        
+    //Todo: 타이머 기능 GameManager.cs로 이동 필요.
+    public int timer = 0;
+    private int hour=0, minute=0, second=0;
+    private IEnumerator coroutine;
+    private static readonly int Goal = Animator.StringToHash("Goal");
+
+    public AudioClip goalSound;
+
+    // MoveInput Variables
+    private float horizontal = 0f;
+
+    public override void OnPhotonInstantiate(PhotonMessageInfo info)
     {
-        
-        //Todo : 불필요한 변수들 제거 필요.
-        private PlayerMove _playerMove;
-        private PlayerPushHand _playerPushHand;
-        private PlayerJump _playerJump;
-        private Rigidbody2D _rigidbody2D;
-        private BoxCollider2D _boxCollider2D;
-        private FadeSystem fadeSystem;
-        private Animator _animator;
-        private AudioSource _audioSource;
-        
-        public GameObject carmera;
-        public GameObject completeTexts;
-        public Text timerText;
-        
-        //Todo: 타이머 기능 GameManager.cs로 이동 필요.
-        public int timer = 0;
-        private int hour=0, minute=0, second=0;
-        private IEnumerator coroutine;
-        private static readonly int Goal = Animator.StringToHash("Goal");
+        base.OnPhotonInstantiate(info);
 
-        public AudioClip goalSound;
+        info.sender.TagObject = this.gameObject;
+    }
 
-        // MoveInput Variables
-        private float horizontal = 0f;
-
-        public  void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+    {
+        if( stream.isWriting)
         {
-
+            stream.SendNext(_spriteRenderer.flipX);
+            stream.SendNext(_playerJump.GetJumpState());
+            stream.SendNext(PhotonNetwork.playerName);
         }
-
-        void Awake()
+        else
         {
-            GameManager.Instance.AddPlayer(this.gameObject);
+            _spriteRenderer.flipX = (bool)stream.ReceiveNext();
 
-            if (fadeSystem == null)
+            var jump_state = (JumpState)stream.ReceiveNext();
+
+            if( jump_state != _playerJump.GetJumpState())
             {
-                fadeSystem = gameObject.AddComponent<FadeSystem>();
-            }
-            
-            if( photonView.isMine)
-            {
-                carmera = GameObject.Find("Main Camera");
-                carmera.GetComponent<CamFollow>().target = this.gameObject.transform;
-                completeTexts = carmera.transform.GetChild(0).transform.Find("Complete Objects").gameObject;
-                timerText = carmera.transform.GetChild(0).transform.Find("timer text").gameObject.GetComponent<Text>();
-            }
-        }
-
-        private void Start()
-        {
-            InitializeComponents();
-
-            if (photonView.isMine)
-            {
-                coroutine = GameTimer();
-
-                completeTexts.SetActive(false);
-                StartCoroutine(coroutine);
-            }
-        }
-
-        private void InitializeComponents()
-        {
-            _playerJump = GetComponent<PlayerJump>();
-            _playerPushHand = GetComponent<PlayerPushHand>();   
-            _playerMove = GetComponent<PlayerMove>();
-            _rigidbody2D = GetComponent<Rigidbody2D>();
-            _boxCollider2D = GetComponent<BoxCollider2D>();
-            _animator = GetComponent<Animator>();
-            _audioSource = GetComponent<AudioSource>();
-
-            if( !photonView.isMine)
-            {
-                _playerJump.enabled = false;
-                _playerMove.enabled = false;
-             //   _boxCollider2D.enabled = false;
-
-              //  Destroy(_rigidbody2D);
-            }
-        }
-
-        private void Update()
-        {
-            if (!photonView.isMine)
-                return;
-
-
-            JumpInput();
-            MoveInput();
-        }
-
-
-        private void JumpInput()
-        {
-            if (Input.GetKey(KeyCode.Space))
-            {
-                _playerJump.JumpEvent(JumpState.Ready);
+                _playerJump.ChangeJumpState(jump_state);
             }
 
-            if(Input.GetKeyUp(KeyCode.Space))
-            {
-                _playerJump.JumpEvent(JumpState.Jump);
-            }
-
-        }
-
-        private void MoveInput()
-        {
-            if (!_playerJump.isJumped())
-            {
-                horizontal = Input.GetAxisRaw("Horizontal");
-                _playerMove.MoveEvent(horizontal);
-            }
-        }
-        
-        
-        
-        private void FinishGame()
-        {
-            _audioSource.clip = goalSound;
-            _audioSource.Play();
-
-           // _playerJump.state = JumpState.Goal;
-            _playerJump.enabled = false;
-            _playerPushHand.enabled = false;
-            _rigidbody2D.gravityScale = 0;
-            _boxCollider2D.enabled = false;
-            StartCoroutine(waitThenCallback(0.1f, () =>
-            {
-                _playerMove.enabled = false;
-                _animator.SetBool("isMove", false);
-                _animator.SetTrigger(Goal);
-            }));
-            StopCoroutine(GameTimer());
-
-            completeTexts.transform.GetChild(1).GetComponent<Text>().text =
-                "Clear Time : " + hour + ":" + minute + ":" + second;
-            completeTexts.SetActive(true);
-
-            Text[] texts = completeTexts.transform.GetComponentsInChildren<Text>();
-            foreach (Text e in texts)
-            {
-                Debug.Log(e);
-                fadeSystem.textFadeOutRetro(e, 0.1f, 0.25f);
-            }
-            StopCoroutine(coroutine);
-        }
-
-        private void OnTriggerEnter2D(Collider2D other)
-        {
-            if (other.gameObject.tag.Equals("Goal"))
-            {
-                FinishGame();
-            }
-        }
-
-        private IEnumerator GameTimer()
-        {
-            while (true)
-            {
-                timer++;
-                hour = (timer%(60*60*24))/(60*60); 
-                minute = (timer%(60*60))/(60);
-                second = timer%(60);
-                timerText.text = hour + ":" + minute + ":" + second;
-                yield return new WaitForSeconds(1f);
-            }
-        }
-        
-        private IEnumerator waitThenCallback(float time, Action callback)
-        {
-            yield return new WaitForSeconds(time);
-            callback();
+            var name = (string)stream.ReceiveNext();
         }
     }
-    
-    
+
+
+    void Awake()
+    {
+        Manager.GameManager.Instance.AddPlayer(this.gameObject);
+
+        if (fadeSystem == null)
+        {
+            fadeSystem = gameObject.AddComponent<FadeSystem>();
+        }
+            
+        if( photonView.isMine)
+        {
+            carmera = GameObject.Find("Main Camera");
+            carmera.GetComponent<CamFollow>().target = this.gameObject.transform;
+            completeTexts = carmera.transform.GetChild(0).transform.Find("Complete Objects").gameObject;
+            timerText = carmera.transform.GetChild(0).transform.Find("timer text").gameObject.GetComponent<Text>();
+        }
+    }
+
+    private void Start()
+    {
+        InitializeComponents();
+
+        if (photonView.isMine)
+        {
+            coroutine = GameTimer();
+
+            completeTexts.SetActive(false);
+            StartCoroutine(coroutine);
+        }
+    }
+
+    private void InitializeComponents()
+    {
+        _playerJump = GetComponent<PlayerJump>();
+        _playerPushHand = GetComponent<PlayerPushHand>();   
+        _playerMove = GetComponent<PlayerMove>();
+        _rigidbody2D = GetComponent<Rigidbody2D>();
+        _boxCollider2D = GetComponent<BoxCollider2D>();
+        _animator = GetComponent<Animator>();
+        _audioSource = GetComponent<AudioSource>();
+        _spriteRenderer = GetComponent<SpriteRenderer>();
+
+        if ( !photonView.isMine)
+        {
+            _playerJump.enabled = false;
+            _playerMove.enabled = false;
+            //   _boxCollider2D.enabled = false;
+
+            //  Destroy(_rigidbody2D);
+        }
+    }
+
+    private void Update()
+    {
+        if (!photonView.isMine)
+            return;
+
+
+        JumpInput();
+        MoveInput();
+    }
+
+
+    private void JumpInput()
+    {
+        if (Input.GetKey(KeyCode.Space))
+        {
+            _playerJump.JumpEvent(JumpState.Ready);
+        }
+
+        if(Input.GetKeyUp(KeyCode.Space))
+        {
+            _playerJump.JumpEvent(JumpState.Jump);
+        }
+
+    }
+
+    private void MoveInput()
+    {
+        if (!_playerJump.isJumped())
+        {
+            horizontal = Input.GetAxisRaw("Horizontal");
+            _playerMove.MoveEvent(horizontal);
+        }
+    }
+        
+        
+        
+    private void FinishGame()
+    {
+        _audioSource.clip = goalSound;
+        _audioSource.Play();
+
+        // _playerJump.state = JumpState.Goal;
+        _playerJump.enabled = false;
+        _playerPushHand.enabled = false;
+        _rigidbody2D.gravityScale = 0;
+        _boxCollider2D.enabled = false;
+        StartCoroutine(waitThenCallback(0.1f, () =>
+        {
+            _playerMove.enabled = false;
+            _animator.SetBool("isMove", false);
+            _animator.SetTrigger(Goal);
+        }));
+        StopCoroutine(GameTimer());
+
+        completeTexts.transform.GetChild(1).GetComponent<Text>().text =
+            "Clear Time : " + hour + ":" + minute + ":" + second;
+        completeTexts.SetActive(true);
+
+        Text[] texts = completeTexts.transform.GetComponentsInChildren<Text>();
+        foreach (Text e in texts)
+        {
+            Debug.Log(e);
+            fadeSystem.textFadeOutRetro(e, 0.1f, 0.25f);
+        }
+        StopCoroutine(coroutine);
+    }
+
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        if (other.gameObject.tag.Equals("Goal"))
+        {
+            FinishGame();
+        }
+    }
+
+    private IEnumerator GameTimer()
+    {
+        while (true)
+        {
+            timer++;
+            hour = (timer%(60*60*24))/(60*60); 
+            minute = (timer%(60*60))/(60);
+            second = timer%(60);
+            timerText.text = hour + ":" + minute + ":" + second;
+            yield return new WaitForSeconds(1f);
+        }
+    }
+        
+    private IEnumerator waitThenCallback(float time, Action callback)
+    {
+        yield return new WaitForSeconds(time);
+        callback();
+    }
 }
+    
+    

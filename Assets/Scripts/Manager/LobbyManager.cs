@@ -6,9 +6,9 @@ using UnityEngine.UI;
 
 public class LobbyManager : Manager.Singleton<LobbyManager>
 {
-    private string _room_Name = string.Empty;
+    private string _roomName = "Temp";
 
-    public InputField roomNameInputField;
+    public InputField nickNameInputField;
 
     public Text messageBoxText;
     public Button joinButton;
@@ -40,12 +40,14 @@ public class LobbyManager : Manager.Singleton<LobbyManager>
 
     private void OnClickedJoinButton()
     {
-        NetworkManager.Instance.JoinRoom(roomNameInputField.text);
+        NetworkManager.Instance.SetupNickName(nickNameInputField.text);
+        NetworkManager.Instance.JoinRoom(_roomName);
     }
 
     private void OnClickedCreateRoomButton()
     {
-        NetworkManager.Instance.CreateRoom(roomNameInputField.text);
+        NetworkManager.Instance.SetupNickName(nickNameInputField.text);
+        NetworkManager.Instance.CreateRoom(_roomName);
     }
 
 }

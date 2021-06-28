@@ -53,6 +53,11 @@ public class NetworkManager : Manager.SingletonPhoton<NetworkManager>
         PhotonNetwork.JoinLobby();
     }
 
+    public void SetupNickName( string nickName)
+    {
+        PhotonNetwork.playerName = nickName;
+    }
+
     public void JoinRoom(string _room_name)
     {
         if (PhotonNetwork.connected)
@@ -64,7 +69,6 @@ public class NetworkManager : Manager.SingletonPhoton<NetworkManager>
         }
     }
 
-
     public override void OnJoinedLobby()
     {
         base.OnJoinedLobby();
@@ -73,6 +77,8 @@ public class NetworkManager : Manager.SingletonPhoton<NetworkManager>
     public override void OnJoinedRoom()
     {
         base.OnJoinedRoom();
+
+        PhotonNetwork.isMessageQueueRunning = false;
 
         if( PhotonNetwork.isMasterClient)
         {
@@ -85,9 +91,15 @@ public class NetworkManager : Manager.SingletonPhoton<NetworkManager>
 
         //      SceneManager.LoadScene("Map1");
     }
+
+    private void OnLevelWasLoaded(int level)
+    {
+        PhotonNetwork.isMessageQueueRunning = true;
+    }
+
     public override void OnPhotonPlayerConnected(PhotonPlayer newPlayer)
     {
-        Manager.GameManager.Instance.CreateNewPlayer();
+       // Manager.GameManager.Instance.CreateNewPlayer();
 
         //if (!newPlayer.IsMasterClient)
         //{
