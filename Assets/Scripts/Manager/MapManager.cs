@@ -35,8 +35,9 @@ public class MapManager : MonoBehaviour
         StartCoroutine(
         waitThenCallback(1f, () =>
         {
-            Debug.Log("Player 생성"); 
-            Instantiate(player);
+            Debug.Log("Player 생성");
+            Manager.GameManager.Instance.CreateNewPlayer();
+            //Instantiate(player);
         }));
 
     }

@@ -31,7 +31,7 @@ public class PlayerJump : MonoBehaviour
     {
         InitializeComponents();
 
-        _currentState = JumpState.Ground;
+        ChangeJumpState(JumpState.Ground);
     }
 
     private void InitializeComponents()
@@ -103,11 +103,9 @@ public class PlayerJump : MonoBehaviour
 
     private void Ground()
     {
-        _currentState = JumpState.Ground;
+        ChangeJumpState(JumpState.Ground);
         
         _rigidbody.sharedMaterial = defaultPhyMat;
-        _playerMove.enabled = true;
-        _animator.enabled = true;
         _rigidbody.velocity = Vector2.zero;
 
         _audioSource.clip = groundHitSound;
@@ -116,22 +114,14 @@ public class PlayerJump : MonoBehaviour
 
     private void JumpReady()
     {
-        _currentState = JumpState.Ready;
-
-        _playerMove.enabled = false;
-        _animator.enabled = false;
-
-        _spriteRenderer.sprite = jumpReadySprite;
+        ChangeJumpState(JumpState.Ready);
     }
 
     private void Jump()
     {
-        _currentState = JumpState.Jump;
+        ChangeJumpState(JumpState.Jump);
 
         _rigidbody.sharedMaterial = bouncePhyMat;
-        _playerMove.enabled = false;
-        _animator.enabled = false;
-        _spriteRenderer.sprite = jumpSprite;
 
         _audioSource.clip = jumpSound;
         _audioSource.Play();
@@ -154,6 +144,42 @@ public class PlayerJump : MonoBehaviour
         _pressTime = 0f;
     }
 
+    public void ChangeJumpState( JumpState jumpState)
+    {
+        _currentState = jumpState;
+
+        // Update 
+        Sprite renderSprite = jumpReadySprite;
+
+        bool player_move_enable = false;
+        bool animator_enable = false;
+
+        switch (_currentState)
+        {
+            case JumpState.Ready:
+                renderSprite = jumpReadySprite;
+                break;
+
+            case JumpState.Jump:
+                renderSprite = jumpSprite;
+                break;
+
+            case JumpState.Ground:
+                player_move_enable = true;
+                animator_enable = true;
+                break;
+        }
+
+        _playerMove.enabled = player_move_enable;
+        _animator.enabled = animator_enable;
+        _spriteRenderer.sprite = renderSprite;
+    }
+
+    public JumpState GetJumpState()
+    {
+        return _currentState;
+    }
+
     public bool isJumped()
     {
         if (_currentState != JumpState.Ground) return true;
@@ -162,7 +188,7 @@ public class PlayerJump : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D other)
     {
-        _currentState = JumpState.Falling;
+        ChangeJumpState(JumpState.Falling);
 
         Vector2 contact_normal = other.GetContact(0).normal;
         //_rigidbody.velocity = Vector2.Reflect(-other.relativeVelocity, contact_normal) * reflectForce;

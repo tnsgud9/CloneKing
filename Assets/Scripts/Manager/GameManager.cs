@@ -6,6 +6,41 @@ using UnityEngine.UI;
 
 namespace Manager
 {
+    public class SingletonPhoton<T> : Photon.PunBehaviour where T : Photon.PunBehaviour
+    {
+        private static T _instance = null;
+
+        protected void Start()
+        {
+            DontDestroyOnLoad(this.gameObject);
+        }
+
+        public static T Instance
+        {
+            get
+            {
+                if (_instance == null)
+                {
+                    _instance = (T)FindObjectOfType<T>();
+
+                    if (_instance == null)
+                    {
+                        var go = new GameObject();
+                        var component = go.AddComponent<T>();
+
+                        _instance = component;
+                    }
+
+                    _instance.gameObject.name = typeof(T).ToString();
+
+                    DontDestroyOnLoad(_instance.gameObject);
+                }
+
+                return _instance;
+            }
+        }
+    }
+
     public class Singleton<T> : MonoBehaviour where T : MonoBehaviour
     {
         private static T _instance = null;
@@ -50,14 +85,14 @@ namespace Manager
         private int _hour=0, _minute=0, _second=0;
         #endregion
         
-        // Comment : íƒ€ì´ë¨¸ì˜ ê´€ë ¨ëœ ë³€ìˆ˜ëŠ” ì¶”í›„ì— networkManagerì—ì„œ ê´€ë¦¬ê°€ í•„ìš”í•©ë‹ˆë‹¤.
-        //           ì ‘ì†ì‹œì ì´ ê¸°ì¤€ì´ ì•„ë‹˜.
+        // Comment : Å¸ÀÌ¸ÓÀÇ °ü·ÃµÈ º¯¼ö´Â ÃßÈÄ¿¡ networkManager¿¡¼­ °ü¸®°¡ ÇÊ¿äÇÕ´Ï´Ù.
+        //           Á¢¼Ó½ÃÁ¡ÀÌ ±âÁØÀÌ ¾Æ´Ô.
         private void Start()
         {
             InitializeComponents();
             _gameTimer = TimeCoroutine();
             StartCoroutine(_gameTimer);
-            SpawnPlayer(); // Todo: ì°¨í›„ ë„¤íŠ¸ì›Œí¬ ê¸°ëŠ¥ ì¶”ê°€ ì´í›„ì—ëŠ” ë³€ê²½í•´ì£¼ì„¸ìš”.
+            SpawnPlayer(); // Todo: Â÷ÈÄ ³×Æ®¿öÅ© ±â´É Ãß°¡ ÀÌÈÄ¿¡´Â º¯°æÇØÁÖ¼¼¿ä.
         }
 
         private void InitializeComponents()
@@ -65,10 +100,11 @@ namespace Manager
         }
 
 
-        // PlayerController.csì˜ void start()ì—ì„œ ì¶”ê°€ ë©ë‹ˆë‹¤.
+        // PlayerController.csÀÇ void start()¿¡¼­ Ãß°¡ µË´Ï´Ù.
         public void AddPlayer(GameObject player)
         {
-            players.Add(player);
+          //  players.Add(player);
+
         }
         
         public void ReachGoalEvent(GameObject player)
@@ -80,13 +116,21 @@ namespace Manager
             }
         }
         
-        //  Todo: ë„¤íŠ¸ì›Œí¬ ì ‘ì†ì´ ë ë•Œ í”Œë ˆì´ì–´ ìƒì„± í•¨ìˆ˜ë¥¼ í˜¸ì¶œí•˜ë©´ ë ê±° ê°™ìŠµë‹ˆë‹¤.
+        //  Todo: ³×Æ®¿öÅ© Á¢¼ÓÀÌ µÉ¶§ ÇÃ·¹ÀÌ¾î »ý¼º ÇÔ¼ö¸¦ È£ÃâÇÏ¸é µÉ°Å °°½À´Ï´Ù.
         public void SpawnPlayer()
         {
             StartCoroutine(waitThenCallback(1f,() =>
             {
                 Instantiate(player);
             }));
+        }
+
+        public void CreateNewPlayer()
+        {
+            const string player_prefab_name = "Prefabs/PlayerChara";
+            Vector3 start_location = new Vector3(0, 0, 0);
+
+            PhotonNetwork.Instantiate(player_prefab_name, start_location, Quaternion.identity, 0);
         }
 
         private IEnumerator TimeCoroutine()
