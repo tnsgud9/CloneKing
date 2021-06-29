@@ -14,6 +14,7 @@ public class PlayerJump : MonoBehaviour
     
     private float _pressTime;
     private JumpState _currentState;
+    private bool _canJump = true;
 
     public float reflectForce = 0.5f;
 
@@ -68,7 +69,7 @@ public class PlayerJump : MonoBehaviour
         switch( state)
         {
             case JumpState.Ready:
-                if(_currentState.Equals(JumpState.Ground))
+                if(_canJump)
                 {
                     JumpReady();
                     return true;
@@ -104,7 +105,7 @@ public class PlayerJump : MonoBehaviour
     private void Ground()
     {
         ChangeJumpState(JumpState.Ground);
-        
+
         _rigidbody.sharedMaterial = defaultPhyMat;
         _rigidbody.velocity = Vector2.zero;
 
@@ -146,6 +147,8 @@ public class PlayerJump : MonoBehaviour
 
     public void ChangeJumpState( JumpState jumpState)
     {
+        Debug.Log(jumpState);
+
         _currentState = jumpState;
 
         // Update 
@@ -162,11 +165,13 @@ public class PlayerJump : MonoBehaviour
 
             case JumpState.Jump:
                 renderSprite = jumpSprite;
+                _canJump = false;
                 break;
 
             case JumpState.Ground:
                 player_move_enable = true;
                 animator_enable = true;
+                _canJump = true;
                 break;
         }
 
@@ -188,6 +193,9 @@ public class PlayerJump : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D other)
     {
+        if (_currentState.Equals(JumpState.Ready))
+            return;
+
         ChangeJumpState(JumpState.Falling);
 
         Vector2 contact_normal = other.GetContact(0).normal;
