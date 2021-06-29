@@ -206,6 +206,7 @@ GameObject:
   - component: {fileID: 604843024966844369}
   - component: {fileID: -4261163788167067914}
   - component: {fileID: -3035910869275678855}
+  - component: {fileID: 2329746862599086258}
   m_Layer: 8
   m_Name: PlayerChara
   m_TagString: Player
@@ -410,11 +411,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aa577d1601b8059479be87b1cf984342, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  carmera: {fileID: 0}
-  completeTexts: {fileID: 0}
-  timerText: {fileID: 0}
-  timer: 0
-  goalSound: {fileID: 8300000, guid: 64adba2d626bef34c98c396a26e78b9d, type: 3}
+  cam: {fileID: 0}
 --- !u!82 &4995436199316367695
 AudioSource:
   m_ObjectHideFlags: 0
@@ -527,7 +524,7 @@ MonoBehaviour:
   group: 0
   OwnerShipWasTransfered: 0
   prefixBackup: -1
-  synchronization: 3
+  synchronization: 2
   onSerializeTransformOption: 3
   onSerializeRigidBodyOption: 2
   ownershipTransfer: 0
@@ -657,6 +654,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_SynchronizeVelocity: 1
   m_SynchronizeAngularVelocity: 1
+--- !u!114 &2329746862599086258
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4995436199316367700}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 35144820bcc25444bb8f0fd767d9423e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  SmoothingDelay: 5
 --- !u!1 &4995436199710030281
 GameObject:
   m_ObjectHideFlags: 0

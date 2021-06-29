@@ -82,11 +82,11 @@ public class NetworkManager : Manager.SingletonPhoton<NetworkManager>
 
         if( PhotonNetwork.isMasterClient)
         {
-            PhotonNetwork.LoadLevel("Map1");
+            PhotonNetwork.LoadLevel("Map2");
         }
         else
         {
-            SceneManager.LoadScene("Map1");
+            SceneManager.LoadScene("Map2");
         }
 
         //      SceneManager.LoadScene("Map1");
@@ -110,7 +110,7 @@ public class NetworkManager : Manager.SingletonPhoton<NetworkManager>
     public void CreateRoom( string _room_name)
     {
         RoomOptions room_option = new RoomOptions();
-        room_option.MaxPlayers = 4;
+        room_option.MaxPlayers = 10;
 
         TypedLobby type_lobby = new TypedLobby();
         type_lobby.Type = LobbyType.Default;
