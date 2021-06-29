@@ -32,7 +32,6 @@ public class PlayerController : Photon.PunBehaviour, IPunObservable
         {
             stream.SendNext(_spriteRenderer.flipX);
             stream.SendNext(_playerJump.GetJumpState());
-            stream.SendNext(PhotonNetwork.playerName);
         }
         else
         {
@@ -56,8 +55,11 @@ public class PlayerController : Photon.PunBehaviour, IPunObservable
             fadeSystem = gameObject.AddComponent<FadeSystem>();
         }
            
+        if( photonView.isMine)
+        {
             cam = GameObject.FindWithTag("MainCamera");
             cam.GetComponent<CamFollow>().target = this.gameObject.transform;
+        }
     }
 
     private void Start()
