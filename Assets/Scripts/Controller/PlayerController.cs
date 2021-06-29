@@ -84,12 +84,19 @@ public class PlayerController : Photon.PunBehaviour, IPunObservable
         if (!photonView.isMine)
             return;
 
-
         JumpInput();
         MoveInput();
 		PushInput();
     }
 
+    [PunRPC]
+    void RPC_SERVER_Push()
+    {
+        if( _playerPushHand != null)
+        {
+            _playerPushHand.PushEvent();
+        }
+    }
 
     private void JumpInput()
     {
@@ -114,19 +121,20 @@ public class PlayerController : Photon.PunBehaviour, IPunObservable
         }
     }
         
-        private void PushInput()
+    private void PushInput()
+    {
+        if (Input.GetKeyDown(KeyCode.LeftControl))
         {
-            if (Input.GetKeyDown(KeyCode.LeftControl))
-            {
-                _playerPushHand.PushEvent();
-            }
+            _playerPushHand.PushEvent();
+            photonView.RPC("RPC_SERVER_Push", PhotonTargets.All);
         }
-        private void OnTriggerEnter2D(Collider2D other)
-        {
-            Debug.Log("Trigger Enter");
-            if(other.CompareTag("Goal"))
-                Manager.GameManager.Instance.ReachGoalEvent(this.gameObject);
-        }
+    }
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        Debug.Log("Trigger Enter");
+        if(other.CompareTag("Goal"))
+            Manager.GameManager.Instance.ReachGoalEvent(this.gameObject);
+    }
 
     private IEnumerator waitThenCallback(float time, Action callback)
     {

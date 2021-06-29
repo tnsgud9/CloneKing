@@ -55,22 +55,29 @@ public class PlayerPushHand : MonoBehaviour
 
     private void InstantiatePushHand()
     {
-        Vector3 vec = transform.position;
+        Vector3 position = transform.position;
+        Vector2 direction = Vector2.left;
+        Quaternion quaternion = Quaternion.Euler(0, 0, 0);
+
         if (_spriteRenderer.flipX)
         {
-            vec.x -= 0.065f;
-            GameObject ph =Instantiate(pushHand,vec,Quaternion.Euler(0,180,0));
-            Physics2D.IgnoreCollision(this.GetComponent<Collider2D>(),ph.GetComponent<Collider2D>(),true); 
-            //플레이어가 생성한 스킬과 충돌 무시
-            ph.GetComponent<Rigidbody2D>().velocity = Vector2.left * pushForce;
+            position.x -= 0.065f;
+            quaternion = Quaternion.Euler(0, 180, 0);
         }
         else
         {
-            vec.x += 0.065f;
-            GameObject ph =Instantiate(pushHand,vec,Quaternion.Euler(0,0,0));
-            Physics2D.IgnoreCollision(this.GetComponent<Collider2D>(),ph.GetComponent<Collider2D>(),true);
-            ph.GetComponent<Rigidbody2D>().velocity = Vector2.right * pushForce;
+            position.x += 0.065f;
+            direction = Vector2.right;
         }
+
+        GameObject go = Instantiate(pushHand, position, quaternion);
+
+        var collider        = GetComponent<Collider2D>();
+        var go_collider     = go.GetComponent<Collider2D>();
+
+        Physics2D.IgnoreCollision(collider, go_collider,true);
+        go.GetComponent<Rigidbody2D>().velocity = direction * pushForce;
+
         skillReady = false;
     }
     
