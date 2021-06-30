@@ -18,6 +18,8 @@ public class PlayerPushHand : MonoBehaviour
     
     public GameObject gauge;
     private Animation _gagueAnimation;
+
+    
     private void Start()
     {
         InitializeComponents();

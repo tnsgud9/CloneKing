@@ -11,7 +11,8 @@ public class PlayerJump : MonoBehaviour
     private SpriteRenderer _spriteRenderer;
     private Rigidbody2D _rigidbody;
     private AudioSource _audioSource;
-    
+
+    private float _maxTime=1f;
     private float _pressTime;
     private JumpState _currentState;
     private bool _canJump = true;
@@ -28,6 +29,8 @@ public class PlayerJump : MonoBehaviour
     public AudioClip wallHitSound;
     public AudioClip groundHitSound;
 
+    public GameObject jumpgauge;
+    private Animation _jumpgagueAnimation;
     private void Start()
     {
         InitializeComponents();
@@ -42,6 +45,9 @@ public class PlayerJump : MonoBehaviour
         _playerMove = GetComponent<PlayerMove>();
         _rigidbody = GetComponent<Rigidbody2D>();
         _audioSource = GetComponent<AudioSource>();
+
+        _jumpgagueAnimation = jumpgauge.transform.GetChild(0).transform.GetChild(1).GetComponent<Animation>();
+        jumpgauge.SetActive(false);
     }
 
     private void Update()
@@ -61,6 +67,7 @@ public class PlayerJump : MonoBehaviour
                 Falling();
                 break;
         }
+        
     }
 
     //JumpEvent는 PlayerController에서 호출됨.
@@ -116,10 +123,12 @@ public class PlayerJump : MonoBehaviour
     private void JumpReady()
     {
         ChangeJumpState(JumpState.Ready);
+
     }
 
     private void Jump()
     {
+        jumpgauge.SetActive(false);
         ChangeJumpState(JumpState.Jump);
 
         _rigidbody.sharedMaterial = bouncePhyMat;
@@ -127,7 +136,7 @@ public class PlayerJump : MonoBehaviour
         _audioSource.clip = jumpSound;
         _audioSource.Play();
         
-        _pressTime = Mathf.Clamp(_pressTime, 0f, 1f); // 최소 0초에서 최대 1초 동안 점프 기준을 정함
+        _pressTime = Mathf.Clamp(_pressTime, 0f, _maxTime); // 최소 0초에서 최대 1초 동안 점프 기준을 정함
        
         float y = Mathf.Lerp(3f, 7f, _pressTime);
         float x = Mathf.Lerp(1f, 4f, _pressTime);
@@ -147,8 +156,10 @@ public class PlayerJump : MonoBehaviour
 
     public void ChangeJumpState( JumpState jumpState)
     {
-        Debug.Log(jumpState);
+        if (jumpState == _currentState) return;
 
+        Debug.Log(jumpState);
+        
         _currentState = jumpState;
 
         // Update 
@@ -161,10 +172,14 @@ public class PlayerJump : MonoBehaviour
         {
             case JumpState.Ready:
                 renderSprite = jumpReadySprite;
+                jumpgauge.SetActive(true);
+                
+                _jumpgagueAnimation.Play();
                 break;
 
             case JumpState.Jump:
                 renderSprite = jumpSprite;
+                jumpgauge.SetActive(false);
                 _canJump = false;
                 break;
 

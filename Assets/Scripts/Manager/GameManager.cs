@@ -89,10 +89,12 @@ namespace Manager
         //           접속시점이 기준이 아님.
         private void Start()
         {
+            player = Resources.Load("Prefabs/PlayerChara") as GameObject;
+
             InitializeComponents();
             _gameTimer = TimeCoroutine();
             StartCoroutine(_gameTimer);
-            SpawnPlayer(); // Todo: 차후 네트워크 기능 추가 이후에는 변경해주세요.
+            //SpawnPlayer(); // Todo: 차후 네트워크 기능 추가 이후에는 변경해주세요.
         }
 
         private void InitializeComponents()
