@@ -123,7 +123,6 @@ public class PlayerJump : MonoBehaviour
     private void JumpReady()
     {
         ChangeJumpState(JumpState.Ready);
-
     }
 
     private void Jump()
@@ -156,10 +155,8 @@ public class PlayerJump : MonoBehaviour
 
     public void ChangeJumpState( JumpState jumpState)
     {
-        if (jumpState == _currentState) return;
+        if (_currentState == jumpState) return;
 
-        Debug.Log(jumpState);
-        
         _currentState = jumpState;
 
         // Update 

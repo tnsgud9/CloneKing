@@ -382,7 +382,7 @@ GameObject:
   - component: {fileID: 604843024966844369}
   - component: {fileID: -4261163788167067914}
   - component: {fileID: -3035910869275678855}
-  - component: {fileID: 2329746862599086258}
+  - component: {fileID: 7507652755171681356}
   m_Layer: 8
   m_Name: PlayerChara
   m_TagString: Player
@@ -832,7 +832,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_SynchronizeVelocity: 1
   m_SynchronizeAngularVelocity: 1
---- !u!114 &2329746862599086258
+--- !u!114 &7507652755171681356
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -841,10 +841,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 4995436199316367700}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 35144820bcc25444bb8f0fd767d9423e, type: 3}
+  m_Script: {fileID: 11500000, guid: bf085f019cfda044094ccf2b5f563243, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  SmoothingDelay: 5
 --- !u!1 &4995436199710030281
 GameObject:
   m_ObjectHideFlags: 0
@@ -1184,9 +1183,9 @@ Animation:
   m_GameObject: {fileID: 6619804880418200602}
   m_Enabled: 1
   serializedVersion: 3
-  m_Animation: {fileID: 7400000, guid: 90c87406f7b4cd24894fd62849752351, type: 2}
+  m_Animation: {fileID: 0}
   m_Animations:
-  - {fileID: 7400000, guid: 90c87406f7b4cd24894fd62849752351, type: 2}
+  - {fileID: 0}
   m_WrapMode: 1
   m_PlayAutomatically: 0
   m_AnimatePhysics: 0

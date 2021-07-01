@@ -11,6 +11,7 @@ public class PlayerController : Photon.PunBehaviour, IPunObservable
     private PlayerMove _playerMove;
     private PlayerPushHand _playerPushHand;
     private PlayerJump _playerJump;
+    private PlayerEmotionControl _emotionControl;
     private FadeSystem fadeSystem;
     private SpriteRenderer _spriteRenderer;
         
@@ -65,7 +66,24 @@ public class PlayerController : Photon.PunBehaviour, IPunObservable
     private void Start()
     {
         InitializeComponents();
+        InitializeWidgets();
     }
+
+    private void InitializeWidgets()
+    {
+        if (!photonView.isMine)
+        {
+            GameObject instance = Instantiate(Resources.Load("Prefabs/Indicator")) as GameObject;
+
+            if (instance != null)
+            {
+                var indicator = instance.GetComponent<Indicator>();
+
+                indicator.Setup(this.gameObject);
+            }
+        }
+    }
+
 
     private void InitializeComponents()
     {
@@ -73,6 +91,7 @@ public class PlayerController : Photon.PunBehaviour, IPunObservable
         _playerPushHand = GetComponent<PlayerPushHand>();   
         _playerMove = GetComponent<PlayerMove>();
         _spriteRenderer = GetComponent<SpriteRenderer>();
+        _emotionControl = GetComponent<PlayerEmotionControl>();
 
         if ( !photonView.isMine)
         {
@@ -89,14 +108,35 @@ public class PlayerController : Photon.PunBehaviour, IPunObservable
         JumpInput();
         MoveInput();
 		PushInput();
+        EmotionInput();
     }
 
     [PunRPC]
-    void RPC_SERVER_Push()
+    void RPC_DoPush()
     {
         if( _playerPushHand != null)
         {
             _playerPushHand.PushEvent();
+        }
+    }
+
+    [PunRPC]
+    void RPC_Emote(EmotionType emotionType)
+    {
+        const string emotion_name = "Prefabs/Player/Emotion";
+        Vector3 additional_spawn_position = new Vector3(0, 0.35f, 0);
+
+        Vector3 spawn_position = gameObject.transform.position;
+        spawn_position += additional_spawn_position;
+
+        var origin_object = Resources.Load(emotion_name) as GameObject;
+
+        var emotion = Instantiate(origin_object, spawn_position, new Quaternion(), gameObject.transform);
+        var emotion_viewer = emotion.GetComponent<EmotionViewer>();
+
+        if( emotion_viewer != null)
+        {
+            emotion_viewer.SetupEmotion(emotionType, 2.0f);
         }
     }
 
@@ -128,9 +168,18 @@ public class PlayerController : Photon.PunBehaviour, IPunObservable
         if (Input.GetKeyDown(KeyCode.LeftControl))
         {
             _playerPushHand.PushEvent();
-            photonView.RPC("RPC_SERVER_Push", PhotonTargets.All);
+            photonView.RPC("RPC_DoPush", PhotonTargets.All);
         }
     }
+
+    private void EmotionInput()
+    {
+        if( Input.GetKeyDown(KeyCode.T))
+        {
+            _emotionControl.DoEmote(this);
+        }
+    }
+
     private void OnTriggerEnter2D(Collider2D other)
     {
         Debug.Log("Trigger Enter");
