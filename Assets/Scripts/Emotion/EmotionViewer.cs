@@ -53,7 +53,7 @@ public class EmotionViewer : MonoBehaviour
 
             float factor = Mathf.Clamp01( _elapsedTime / ( _durationTime * half));
 
-            transform.localScale = Vector3.Lerp(Vector3.zero, Vector3.one, factor);
+            transform.localScale =  Vector3.Lerp(Vector3.zero, Vector3.one, EasingFunction.EaseInOutBack(0.0f, 1.0f, factor));
             
             if (_spriteRenderer != null)
             {

@@ -16,6 +16,7 @@ public class PlayerJump : MonoBehaviour
     private float _pressTime;
     private JumpState _currentState;
     private bool _canJump = true;
+    private bool _playSounds = false;
 
     public float reflectForce = 0.5f;
 
@@ -70,6 +71,12 @@ public class PlayerJump : MonoBehaviour
         
     }
 
+    public void SetPlaySounds( bool playSounds)
+    {
+        _playSounds = playSounds;
+    }
+
+
     //JumpEvent는 PlayerController에서 호출됨.
     public bool JumpEvent( JumpState state )
     {
@@ -116,8 +123,11 @@ public class PlayerJump : MonoBehaviour
         _rigidbody.sharedMaterial = defaultPhyMat;
         _rigidbody.velocity = Vector2.zero;
 
-        _audioSource.clip = groundHitSound;
-        _audioSource.Play();
+        if (_playSounds)
+        {
+            _audioSource.clip = groundHitSound;
+            _audioSource.Play();
+        }
     }
 
     private void JumpReady()
@@ -132,9 +142,12 @@ public class PlayerJump : MonoBehaviour
 
         _rigidbody.sharedMaterial = bouncePhyMat;
 
-        _audioSource.clip = jumpSound;
-        _audioSource.Play();
-        
+        if (_playSounds)
+        {
+            _audioSource.clip = jumpSound;
+            _audioSource.Play();
+        }
+
         _pressTime = Mathf.Clamp(_pressTime, 0f, _maxTime); // 최소 0초에서 최대 1초 동안 점프 기준을 정함
        
         float y = Mathf.Lerp(3f, 7f, _pressTime);
@@ -219,8 +232,11 @@ public class PlayerJump : MonoBehaviour
         }
         else
         {
-            _audioSource.clip = wallHitSound;
-            _audioSource.Play();
+            if (_playSounds)
+            {
+                _audioSource.clip = wallHitSound;
+                _audioSource.Play();
+            }
         }
 
     }

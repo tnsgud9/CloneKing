@@ -118,7 +118,6 @@ public class NetworkManager : Manager.SingletonPhoton<NetworkManager>
         PhotonNetwork.CreateRoom(_room_name, room_option, type_lobby); 
     }
 
-
     // Update is called once per frame
     void Update()
     {

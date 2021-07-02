@@ -14,12 +14,14 @@ public class PlayerController : Photon.PunBehaviour, IPunObservable
     private PlayerEmotionControl _emotionControl;
     private FadeSystem fadeSystem;
     private SpriteRenderer _spriteRenderer;
-        
-     public GameObject cam;
+
+    private PlayerColor _playerColor;
+
+    public GameObject cam;
 
     // MoveInput Variables
     private float horizontal = 0f;
-
+    
     public override void OnPhotonInstantiate(PhotonMessageInfo info)
     {
         base.OnPhotonInstantiate(info);
@@ -50,8 +52,8 @@ public class PlayerController : Photon.PunBehaviour, IPunObservable
 	void Awake()
 	{
 		 Manager.GameManager.Instance.AddPlayer(this.gameObject);
-		
-		if (fadeSystem == null)
+
+        if (fadeSystem == null)
         {
             fadeSystem = gameObject.AddComponent<FadeSystem>();
         }
@@ -60,6 +62,8 @@ public class PlayerController : Photon.PunBehaviour, IPunObservable
         {
             cam = GameObject.FindWithTag("MainCamera");
             cam.GetComponent<CamFollow>().target = this.gameObject.transform;
+
+            // PhotonNetwork.player.CustomProperties["Color"] = NetworkManager.Instance.GetPlayerColor();
         }
     }
 
@@ -67,6 +71,8 @@ public class PlayerController : Photon.PunBehaviour, IPunObservable
     {
         InitializeComponents();
         InitializeWidgets();
+
+        _playerJump.SetPlaySounds(photonView.isMine);
     }
 
     private void InitializeWidgets()

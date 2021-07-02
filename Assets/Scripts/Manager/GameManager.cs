@@ -75,7 +75,6 @@ namespace Manager
     {
         [SerializeField] private List<GameObject> players;
         [SerializeField] private Text timeText;
-
         public GameObject player;
         
         
@@ -105,8 +104,12 @@ namespace Manager
         // PlayerController.cs의 void start()에서 추가 됩니다.
         public void AddPlayer(GameObject player)
         {
-          //  players.Add(player);
+            var photonView = player.GetPhotonView();
 
+            if ( photonView != null)
+            {
+                players.Add(player);
+            }
         }
         
         public void ReachGoalEvent(GameObject player)
@@ -148,7 +151,6 @@ namespace Manager
                 
             }
         }
-        //====
         private IEnumerator waitThenCallback(float time, Action callback)
         {
             yield return new WaitForSeconds(time);

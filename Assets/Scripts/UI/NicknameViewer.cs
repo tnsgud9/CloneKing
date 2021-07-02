@@ -5,10 +5,24 @@ using UnityEngine;
 public class NicknameViewer : MonoBehaviour
 {
     private TextMesh _textMesh;
+    private MeshRenderer _meshRenderer;
 
     [SerializeField]
     public PlayerController playerController;
 
+
+    public void OnEnable()
+    {
+        if( _meshRenderer != null)
+            _meshRenderer.enabled = true;
+    }
+
+    public void OnDisable()
+    {
+        if (_meshRenderer != null)
+            _meshRenderer.enabled = false;
+
+    }
     // Start is called before the first frame update
     void Start()
     {
@@ -18,6 +32,8 @@ public class NicknameViewer : MonoBehaviour
     void InitializeComponents()
     {
         _textMesh = GetComponent<TextMesh>();
+        _meshRenderer = GetComponent<MeshRenderer>();
+
     }
 
     // Update is called once per frame
