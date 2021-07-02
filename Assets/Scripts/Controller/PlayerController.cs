@@ -136,7 +136,7 @@ public class PlayerController : Photon.PunBehaviour, IPunObservable
 
         if( emotion_viewer != null)
         {
-            emotion_viewer.SetupEmotion(emotionType, 2.0f);
+            emotion_viewer.SetupEmotion(emotionType, 2.5f);
         }
     }
 

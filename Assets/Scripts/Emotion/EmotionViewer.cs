@@ -10,6 +10,8 @@ public class EmotionViewer : MonoBehaviour
     private SpriteRenderer _spriteRenderer;
     private IEnumerator _lifeTimeTimer;
 
+    private const float _appearTime = 1.0f;
+   
     private float _durationTime;
     private float _elapsedTime;
 
@@ -45,13 +47,11 @@ public class EmotionViewer : MonoBehaviour
 
     private IEnumerator LifeTimeCoroutine()
     {
-        const float half = 0.5f;
-
         while( _elapsedTime <= _durationTime)
         {
             _elapsedTime += Time.deltaTime;
 
-            float factor = Mathf.Clamp01( _elapsedTime / ( _durationTime * half));
+            float factor = Mathf.Clamp01( _elapsedTime / (_appearTime));
 
             transform.localScale = Vector3.Lerp(Vector3.zero, Vector3.one, factor);
             
