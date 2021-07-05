@@ -573,8 +573,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 530cfaa6ce17527458d0befbf1f6bb2c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  coolTime: 10
+  delayTime: 0.7
   pushHand: {fileID: 1013718522952890257, guid: ebeac98644ad7d64db8dd4215f3127b0, type: 3}
-  skillReady: 1
   pushForce: 5
   playerPushSprite: {fileID: 21300000, guid: 72468df3eb0866640806438f08ca2bec, type: 3}
   gauge: {fileID: 4995436200939261128}

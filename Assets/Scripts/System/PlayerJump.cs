@@ -108,7 +108,7 @@ public class PlayerJump : MonoBehaviour
 
     private void Falling()
     {
-        string[] layerNames = { "TileMap, Player" };
+        string[] layerNames = { "TileMap", "Player" };
 
         int layerIndex = 0;
         for( int i =0; i< layerNames.Length - 1; ++i)
