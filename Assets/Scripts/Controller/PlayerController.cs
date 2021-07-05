@@ -158,7 +158,7 @@ public class PlayerController : Photon.PunBehaviour, IPunObservable
     {
         if( _playerPushHand != null)
         {
-            _playerPushHand.PushEvent();
+            _playerPushHand.DoSkill();
         }
     }
 
@@ -209,7 +209,7 @@ public class PlayerController : Photon.PunBehaviour, IPunObservable
     {
         if (Input.GetKeyDown(KeyCode.LeftControl))
         {
-            _playerPushHand.PushEvent();
+            _playerPushHand.DoSkill();
             photonView.RPC("RPC_DoPush", PhotonTargets.All);
         }
 

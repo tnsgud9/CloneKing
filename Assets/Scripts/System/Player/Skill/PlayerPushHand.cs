@@ -4,14 +4,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class PlayerPushHand : MonoBehaviour
+public class PlayerPushHand : BaseSkill
 {
     private SpriteRenderer _spriteRenderer;
     private PlayerJump _playerJump;
     private PlayerMove _playerMove;
     private Animator _animator;
     public GameObject pushHand;
-    public bool skillReady = true;
     public float pushForce;
     public Sprite playerPushSprite;
     
@@ -36,23 +35,36 @@ public class PlayerPushHand : MonoBehaviour
         _playerMove = GetComponent<PlayerMove>();
     }
 
-    public void PushEvent()
+    protected override void OnStartAction()
     {
-        if (skillReady)
-        {
-            _animator.enabled = false;
-            _spriteRenderer.sprite = playerPushSprite;
-            _playerMove.enabled = false;
-            _playerJump.enabled = false;
-            StartCoroutine(waitThenCallback(0.7f, () =>
-            {
-                _animator.enabled = true;
-                _playerMove.enabled = true;
-                _playerJump.enabled = true;
-            }));
-            InstantiatePushHand();
-            StartCoroutine(reload());
-        }
+        base.OnStartAction();
+
+        _animator.enabled = false;
+        _playerMove.enabled = false;
+        _playerJump.enabled = false;
+
+        _spriteRenderer.sprite = playerPushSprite;
+
+        InstantiatePushHand();
+
+        gauge.SetActive(true);
+        _gagueAnimation.Play();
+    }
+
+    protected override void OnFinishDelayAction()
+    {
+        base.OnFinishDelayAction();
+
+        _animator.enabled = true;
+        _playerMove.enabled = true;
+        _playerJump.enabled = true;
+    }
+
+    protected override void OnActivation()
+    {
+        base.OnActivation();
+
+        gauge.SetActive(false);
     }
 
     private void InstantiatePushHand()
@@ -80,22 +92,5 @@ public class PlayerPushHand : MonoBehaviour
         Physics2D.IgnoreCollision(collider, go_collider,true);
         go.GetComponent<Rigidbody2D>().velocity = direction * pushForce;
 
-        skillReady = false;
     }
-    
-    private IEnumerator reload()
-    {
-        gauge.SetActive(true);
-        _gagueAnimation.Play();
-        yield return new WaitForSeconds(10f);
-        skillReady = true;
-        gauge.SetActive(false);
-    }
-
-    private IEnumerator waitThenCallback(float time, Action callback)
-    {
-        yield return new WaitForSeconds(time);
-        callback();
-    }
-
 }
