@@ -22,6 +22,7 @@ public class PlayerJump : MonoBehaviour
 
     public Sprite jumpReadySprite;
     public Sprite jumpSprite;
+    public Sprite fallSprite;
     
     public PhysicsMaterial2D defaultPhyMat;
     public PhysicsMaterial2D bouncePhyMat;
@@ -186,9 +187,6 @@ public class PlayerJump : MonoBehaviour
 
         _currentState = jumpState;
 
-        if( gameObject.GetComponent<PlayerController>().photonView.isMine)
-            Debug.Log(_currentState);
-
         // Update 
         Sprite renderSprite = jumpReadySprite;
 
@@ -211,7 +209,7 @@ public class PlayerJump : MonoBehaviour
                 break;
 
             case JumpState.Falling:
-                animator_enable = true;
+                renderSprite = fallSprite;
                 break;
 
             case JumpState.Ground:

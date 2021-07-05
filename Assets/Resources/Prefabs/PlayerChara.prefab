@@ -554,6 +554,7 @@ MonoBehaviour:
   reflectForce: 0.5
   jumpReadySprite: {fileID: 21300000, guid: 9dbb8ae368d518c40b06a3d97cc60fde, type: 3}
   jumpSprite: {fileID: 21300000, guid: 320f4eb52e227b446830a1f6fd691fca, type: 3}
+  fallSprite: {fileID: 21300000, guid: 5c8b2ada1a819a54e8c051165c738f18, type: 3}
   defaultPhyMat: {fileID: 6200000, guid: 1406da4bb76b7a94aa633e205aab222d, type: 2}
   bouncePhyMat: {fileID: 6200000, guid: 5f34c6a39c4169b43835437181703392, type: 2}
   jumpSound: {fileID: 8300000, guid: b1a3d57a4a9edd64ea83e6d4d6ac665f, type: 3}

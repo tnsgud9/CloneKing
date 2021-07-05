@@ -134,8 +134,23 @@ public class PlayerController : Photon.PunBehaviour, IPunObservable
 
         JumpInput();
         MoveInput();
-		PushInput();
+        SkillInput();
         EmotionInput();
+    }
+
+
+    [PunRPC]
+    void RPC_SpawnObject( string prefabName, double destroyTime, Vector3 position)
+    {
+        GameObject go = Resources.Load(prefabName) as GameObject;
+
+        GameObject SpawnObject = Instantiate(go, position, new Quaternion());
+
+        if (SpawnObject != null)
+        {
+            SpawnObject.GetComponent<SynchronizedObject>().SetupObject(destroyTime);
+            SpawnObject.transform.position = position;
+        }
     }
 
     [PunRPC]
@@ -190,12 +205,17 @@ public class PlayerController : Photon.PunBehaviour, IPunObservable
         }
     }
         
-    private void PushInput()
+    private void SkillInput()
     {
         if (Input.GetKeyDown(KeyCode.LeftControl))
         {
             _playerPushHand.PushEvent();
             photonView.RPC("RPC_DoPush", PhotonTargets.All);
+        }
+
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            photonView.RPC("RPC_SpawnObject", PhotonTargets.All,"Prefabs/Object/Wall", PhotonNetwork.time + 15.0d, transform.position + Vector3.down * 0.35f);
         }
     }
 
@@ -206,6 +226,8 @@ public class PlayerController : Photon.PunBehaviour, IPunObservable
             _emotionControl.DoEmote(this, EmotionType.ThumbsUp);
         }
     }
+
+
 
     private void OnTriggerEnter2D(Collider2D other)
     {
