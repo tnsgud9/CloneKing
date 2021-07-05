@@ -9,6 +9,7 @@ using Photon;
 public class NetworkManager : Manager.SingletonPhoton<NetworkManager>
 {
     private string _gameVersion = "Temp";
+    private string _mapName = "Map2";
 
     // Start is called before the first frame update
     protected new void Start()
@@ -25,6 +26,8 @@ public class NetworkManager : Manager.SingletonPhoton<NetworkManager>
         LobbyManager.Instance.UpdateConnectionWidgets();
 
         JoinLobby();
+
+        PhotonNetwork.player.CustomProperties["Color"] = PlayerColor.Black;
 
         base.OnConnectedToMaster();
     }
@@ -82,11 +85,11 @@ public class NetworkManager : Manager.SingletonPhoton<NetworkManager>
 
         if( PhotonNetwork.isMasterClient)
         {
-            PhotonNetwork.LoadLevel("Map2");
+            PhotonNetwork.LoadLevel(_mapName);
         }
         else
         {
-            SceneManager.LoadScene("Map2");
+            SceneManager.LoadScene(_mapName);
         }
 
         //      SceneManager.LoadScene("Map1");

@@ -24,7 +24,7 @@ public class NicknameViewer : MonoBehaviour
 
     }
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
         InitializeComponents();
     }
@@ -33,7 +33,6 @@ public class NicknameViewer : MonoBehaviour
     {
         _textMesh = GetComponent<TextMesh>();
         _meshRenderer = GetComponent<MeshRenderer>();
-
     }
 
     // Update is called once per frame
@@ -42,6 +41,9 @@ public class NicknameViewer : MonoBehaviour
         if(_textMesh != null && playerController != null)
         {
             _textMesh.text = playerController.photonView.owner.NickName;
+
+            var color = (PlayerColor)playerController.photonView.owner.CustomProperties["Color"];
+            _textMesh.color = color.PlayerColorToColor();
         }
     }
 }

@@ -10,7 +10,6 @@ public class Indicator : MonoBehaviour
     private NicknameViewer _nickNameViewer = null;
     private PlayerColor _playerColor;
 
-
     private void InitializeComponents()
     {
         _spriteRenderer = GetComponentInChildren<SpriteRenderer>();
@@ -32,10 +31,12 @@ public class Indicator : MonoBehaviour
             if( playerController != null)
             {
                 _nickNameViewer.playerController = playerController;
+
+                _playerColor =(PlayerColor)playerController.photonView.owner.CustomProperties["Color"];
+
+                _spriteRenderer.color = _playerColor.PlayerColorToColor();
             }
         }
-
-        //_playerColor = (PlayerColor)PhotonNetwork.player.CustomProperties["Color"];
     }
 
     private void DriveIndicate()
@@ -48,8 +49,10 @@ public class Indicator : MonoBehaviour
             Vector3 targetPosition = _targetObject.gameObject.transform.position;
             Vector3 viewportPosition = Camera.main.WorldToViewportPoint(targetPosition);
 
-            bool isVisible = viewportPosition.x <= 0.0f || viewportPosition.x >= Screen.width ||
-                viewportPosition.y <= 0.0f || viewportPosition.y >= Screen.height;
+            Debug.Log(viewportPosition);
+
+            bool isVisible = viewportPosition.x <= 0.0f || viewportPosition.x >= 1.0f ||
+                viewportPosition.y <= 0.0f || viewportPosition.y >= 1.0f;
 
             _spriteRenderer.enabled = isVisible;
             _nickNameViewer.enabled = isVisible;
@@ -71,7 +74,7 @@ public class Indicator : MonoBehaviour
         }
         else
         {
-            Destroy(this.gameObject);
+            Destroy(gameObject);
         }
     }
 

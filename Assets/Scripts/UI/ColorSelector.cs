@@ -49,6 +49,8 @@ public class ColorSelector : MonoBehaviour
                 _colorSelectEntries.Add(colorSelectEntity);
             }
         }
+
+        OnSelectedColor(_colorSelectEntries[0]);
     }
 
     private void InitializeComponents()
