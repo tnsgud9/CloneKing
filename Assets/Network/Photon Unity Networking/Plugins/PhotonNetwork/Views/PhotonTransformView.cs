@@ -42,6 +42,7 @@ public class PhotonTransformView : MonoBehaviour, IPunObservable
 
     PhotonView m_PhotonView;
 
+    bool m_IsSyncMode = false;
     bool m_ReceivedNetworkUpdate = false;
 
 	/// <summary>
@@ -83,6 +84,19 @@ public class PhotonTransformView : MonoBehaviour, IPunObservable
         }
 
        	transform.localPosition = this.m_PositionControl.UpdatePosition(transform.localPosition);
+
+        const float error_correct_max = 1.0f;
+
+        if (m_IsSyncMode)
+        {
+            transform.position = Vector3.Lerp( transform.position,  m_PositionControl.GetNetworkPosition(), m_PositionModel.InterpolateLerpSpeed * Time.deltaTime);
+
+            Vector3 diff = transform.position - m_PositionControl.GetNetworkPosition();
+            if (diff.magnitude <= error_correct_max)
+            {
+                m_IsSyncMode = false;
+            }
+        }
     }
 
     void UpdateRotation()
@@ -155,6 +169,16 @@ public class PhotonTransformView : MonoBehaviour, IPunObservable
 
 			}
 
+        }
+    }
+
+    public void SetForceSyncMode(bool isSyncMode, bool isDirectlySync )
+    {
+        m_IsSyncMode = isSyncMode;
+
+        if(isDirectlySync)
+        {
+            transform.position = m_PositionControl.GetNetworkPosition();
         }
     }
 

@@ -15,6 +15,10 @@ public class PlayerController : Photon.PunBehaviour, IPunObservable
     private FadeSystem fadeSystem;
     private SpriteRenderer _spriteRenderer;
 
+
+    //Network
+    private PhotonTransformView _photonTransformView;
+
     private PlayerColor _playerColor;
 
     public GameObject cam;
@@ -45,8 +49,24 @@ public class PlayerController : Photon.PunBehaviour, IPunObservable
             if( jump_state != _playerJump.GetJumpState())
             {
                 _playerJump.ChangeJumpState(jump_state);
+
+                bool syncModeEnable = false;
+                bool directlySync = false;
+
+                switch ( _playerJump.GetJumpState())
+                {
+                    case JumpState.Ready:
+                        syncModeEnable = true;
+                        break;
+
+                    case JumpState.Ground:
+                        directlySync = true;
+                        break;
+                }
+
+                _photonTransformView.SetForceSyncMode(syncModeEnable, directlySync);
             }
-		}
+        }
 	}
 
 	void Awake()
@@ -98,6 +118,7 @@ public class PlayerController : Photon.PunBehaviour, IPunObservable
         _playerMove = GetComponent<PlayerMove>();
         _spriteRenderer = GetComponent<SpriteRenderer>();
         _emotionControl = GetComponent<PlayerEmotionControl>();
+        _photonTransformView = GetComponent<PhotonTransformView>();
 
         if ( !photonView.isMine)
         {
