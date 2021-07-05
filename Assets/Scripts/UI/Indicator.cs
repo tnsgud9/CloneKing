@@ -41,15 +41,13 @@ public class Indicator : MonoBehaviour
 
     private void DriveIndicate()
     {
-        const float expand_size = 0.03f;
+        const float expand_size = 0.04f;
 
         if( _targetObject != null)
         {
             // Position
             Vector3 targetPosition = _targetObject.gameObject.transform.position;
             Vector3 viewportPosition = Camera.main.WorldToViewportPoint(targetPosition);
-
-            Debug.Log(viewportPosition);
 
             bool isVisible = viewportPosition.x <= 0.0f || viewportPosition.x >= 1.0f ||
                 viewportPosition.y <= 0.0f || viewportPosition.y >= 1.0f;
@@ -71,6 +69,7 @@ public class Indicator : MonoBehaviour
 
             float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
             _spriteRenderer.transform.localRotation = Quaternion.AngleAxis(angle, Vector3.forward);
+
         }
         else
         {

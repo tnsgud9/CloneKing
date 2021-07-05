@@ -16,12 +16,12 @@ public class PlayerEmotionControl : MonoBehaviour
 
     public bool IsExpiredCoolTime() { return _canActive; }
 
-    public void DoEmote( PlayerController playerController)
+    public void DoEmote( PlayerController playerController, EmotionType emotionType)
     {
         if( IsExpiredCoolTime())
         {
             _canActive = false;
-            playerController.photonView.RPC("RPC_Emote", PhotonTargets.All, EmotionType.ThumbsUp);
+            playerController.photonView.RPC("RPC_Emote", PhotonTargets.All, emotionType);
             StartCoroutine(CoolTimeCoroutine());
 
         }

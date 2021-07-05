@@ -203,7 +203,7 @@ public class PlayerController : Photon.PunBehaviour, IPunObservable
     {
         if( Input.GetKeyDown(KeyCode.T))
         {
-            _emotionControl.DoEmote(this);
+            _emotionControl.DoEmote(this, EmotionType.ThumbsUp);
         }
     }
 

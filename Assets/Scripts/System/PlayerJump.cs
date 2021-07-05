@@ -107,11 +107,25 @@ public class PlayerJump : MonoBehaviour
 
     private void Falling()
     {
-        const string tileMapLayerName = "TileMap";
-        int tileLayerIndex = 1 << LayerMask.NameToLayer(tileMapLayerName);
+        string[] layerNames = { "TileMap, Player" };
 
-        if (Physics2D.Raycast(transform.position, Vector2.down, 0.165f, tileLayerIndex))
+        int layerIndex = 0;
+        for( int i =0; i< layerNames.Length - 1; ++i)
         {
+            layerIndex |= ( 1 << LayerMask.NameToLayer(layerNames[i]));
+        }
+
+        var hittedObjects = Physics2D.RaycastAll(transform.position, Vector2.down, 0.165f, layerIndex);
+        for(int i =0; i < hittedObjects.Length; ++i)
+        {
+            var rayHit =  hittedObjects[i];
+
+            Debug.Log(rayHit.collider.gameObject.name);
+
+            if (rayHit.collider.gameObject == this.gameObject)
+            {
+                continue;
+            }
             Ground();
         }
     }
@@ -172,6 +186,9 @@ public class PlayerJump : MonoBehaviour
 
         _currentState = jumpState;
 
+        if( gameObject.GetComponent<PlayerController>().photonView.isMine)
+            Debug.Log(_currentState);
+
         // Update 
         Sprite renderSprite = jumpReadySprite;
 
@@ -191,6 +208,10 @@ public class PlayerJump : MonoBehaviour
                 renderSprite = jumpSprite;
                 jumpgauge.SetActive(false);
                 _canJump = false;
+                break;
+
+            case JumpState.Falling:
+                animator_enable = true;
                 break;
 
             case JumpState.Ground:
@@ -218,7 +239,7 @@ public class PlayerJump : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D other)
     {
-        if (_currentState.Equals(JumpState.Ready))
+        if (_currentState.Equals(JumpState.Ready) || _currentState.Equals(JumpState.Ground))
             return;
 
         ChangeJumpState(JumpState.Falling);
