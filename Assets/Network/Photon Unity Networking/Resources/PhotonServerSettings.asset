@@ -44,6 +44,6 @@ MonoBehaviour:
   - RequestForPickupTimes
   - RPC_DoPush
   - RPC_Emote
-  - TaggedPlayer
   - RPC_SpawnObject
+  - TaggedPlayer
   DisableAutoOpenWizard: 1
