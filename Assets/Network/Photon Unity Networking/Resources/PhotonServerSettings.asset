@@ -46,4 +46,6 @@ MonoBehaviour:
   - RPC_Emote
   - RPC_SpawnObject
   - TaggedPlayer
+  - RPC_DoSkill
+  - RPC_FinishGame
   DisableAutoOpenWizard: 1
