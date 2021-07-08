@@ -43,7 +43,28 @@ public static class EasingFunction
     //
     // Easing functions
     //
+    public static bool NearlyEquals(this float lhs, float rhs, float acceptableTolerance)
+    {
+        if( Mathf.Abs( lhs - rhs ) <= acceptableTolerance)
+        {
+            return true;
+        }
 
+        return false;
+    }
+
+    public static bool TryGetValueToInt( this PhotonView view, string key, out int output )
+    {
+        object obj;
+        if(view.owner.CustomProperties.TryGetValue(key, out obj))
+        {
+            output = (int)obj;
+            return true;
+        }
+
+        output = -1;
+        return false;
+    }
     public static float Linear(float start, float end, float value)
     {
         return Mathf.Lerp(start, end, value);

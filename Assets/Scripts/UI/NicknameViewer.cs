@@ -40,7 +40,15 @@ public class NicknameViewer : MonoBehaviour
     {
         if(_textMesh != null && playerController != null)
         {
-            _textMesh.text = playerController.photonView.owner.NickName;
+            string nameText = playerController.photonView.owner.NickName;
+
+            int rank = -1;
+            if (playerController.photonView.TryGetValueToInt("Rank", out rank))
+            {
+                nameText = rank.ToString() + ". " + nameText;
+            }
+
+            _textMesh.text = nameText;
 
             var color = (PlayerColor)playerController.photonView.owner.CustomProperties["Color"];
             _textMesh.color = color.PlayerColorToColor();

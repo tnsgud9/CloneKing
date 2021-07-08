@@ -121,8 +121,6 @@ public class PlayerJump : MonoBehaviour
         {
             var rayHit =  hittedObjects[i];
 
-            Debug.Log(rayHit.collider.gameObject.name);
-
             if (rayHit.collider.gameObject == this.gameObject)
             {
                 continue;

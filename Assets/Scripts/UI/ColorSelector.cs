@@ -39,7 +39,7 @@ public class ColorSelector : MonoBehaviour
             PlayerColor color = (PlayerColor)i;
 
             GameObject go = Instantiate(Resources.Load(_colorEntryPath) as GameObject);
-            go.transform.SetParent(parent_transform);
+            go.transform.SetParent(parent_transform, false);
 
             var colorSelectEntity = go.GetComponent<ColorSelectEnity>();
 

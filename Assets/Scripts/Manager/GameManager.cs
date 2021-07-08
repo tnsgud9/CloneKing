@@ -73,10 +73,12 @@ namespace Manager
     
     public class GameManager : Singleton<GameManager>
     {
-        [SerializeField] private List<GameObject> players;
+        [SerializeField] private List<PhotonView> players;
         [SerializeField] private Text timeText;
+        private float playTime = 5;
+
         public GameObject player;
-        
+
         
         #region Timer Variables
         private IEnumerator _gameTimer;
@@ -84,19 +86,33 @@ namespace Manager
         private int _hour=0, _minute=0, _second=0;
         #endregion
         
+        public List<PhotonView> GetPlayers() { return players; }
+
         // Comment : 타이머의 관련된 변수는 추후에 networkManager에서 관리가 필요합니다.
         //           접속시점이 기준이 아님.
         private void Start()
-        {
+        {            
             player = Resources.Load("Prefabs/PlayerChara") as GameObject;
 
             InitializeComponents();
             _gameTimer = TimeCoroutine();
             StartCoroutine(_gameTimer);
+
+            // if (PhotonNetwork.isMasterClient)
+            {
+                StartCoroutine(DriveRanking());
+            }
             //SpawnPlayer(); // Todo: 차후 네트워크 기능 추가 이후에는 변경해주세요.
         }
 
         private void InitializeComponents()
+        {
+            timeText = GameObject.Find("timer text").GetComponent<Text>();
+            timeText.gameObject.SetActive(true);
+
+        }
+
+        private void Update()
         {
         }
 
@@ -108,17 +124,83 @@ namespace Manager
 
             if ( photonView != null)
             {
-                players.Add(player);
+                players.Add(photonView);
+
+                if (photonView.owner.IsMasterClient)
+                {
+                    PhotonNetwork.room.CustomProperties["Time"] = PhotonNetwork.time + playTime;
+                }
+            }
+        }
+
+        public void UpdateRank()
+        {
+            const float tolerance = 0.3f;
+
+            players.Sort((lhs, rhs) => { return -lhs.gameObject.transform.position.y.CompareTo( rhs.gameObject.transform.position.y); });
+
+            int rank = 1;
+
+            PhotonView prevPlayer = null;
+            int prevPlayerRank = 1;
+
+            foreach ( var player in players)
+            {
+                int currentRank = rank++;
+                var photonView = player;
+
+                if( photonView != null && photonView.isMine)
+                {
+                    int prevRank = -1;
+
+                    photonView.TryGetValueToInt("Rank", out prevRank);
+
+                    if (prevPlayer != null)
+                    {
+                        if (prevPlayer.gameObject.transform.position.y.NearlyEquals(player.gameObject.transform.position.y, tolerance))
+                        {
+                            currentRank = prevPlayerRank;
+                        }
+                    }
+
+                    prevPlayer = player;
+                    prevPlayerRank = currentRank;
+
+                    if ( currentRank != prevRank)
+                    {
+                        photonView.owner.CustomProperties["Rank"] = currentRank;
+                        photonView.owner.SetCustomProperties(photonView.owner.CustomProperties);
+                    }
+                }
             }
         }
         
         public void ReachGoalEvent(GameObject player)
         {
             StopCoroutine(_gameTimer);
-            foreach (GameObject obj in players)
+            StartCoroutine(DriveVictoryParticle());
+            StartCoroutine(waitThenCallback(5.0f, () => { CreateRankingPopup(); }));
+
+            foreach (PhotonView photonView in players)
             {
-                obj.GetComponent<PlayerController>().enabled = false;
+                photonView.gameObject.GetComponent<PlayerController>().enabled = false;
             }
+        }
+
+        private void CreateRankingPopup()
+        {
+            const string rankingPopupPath = "Prefabs/UI/RankingPopup";
+
+            var canvas = FindObjectOfType<Canvas>();
+
+            GameObject go = Instantiate(Resources.Load(rankingPopupPath) as GameObject);
+
+            Debug.Log(go);
+            if (canvas != null)
+            {
+                go.transform.SetParent(canvas.transform, false);
+            }
+
         }
         
         //  Todo: 네트워크 접속이 될때 플레이어 생성 함수를 호출하면 될거 같습니다.
@@ -138,17 +220,59 @@ namespace Manager
             PhotonNetwork.Instantiate(player_prefab_name, start_location, Quaternion.identity, 0);
         }
 
+        private IEnumerator DriveRanking()
+        {
+            const float updateTime = 0.5f;
+
+            while (true)
+            {
+                UpdateRank();
+
+                yield return new WaitForSeconds(updateTime);
+            }
+        }
+
+
+        private IEnumerator DriveVictoryParticle()
+        {
+            const float delayTime= 2.0f;
+            const string resourcesName ="Prefabs/Effects/Fireworks";
+
+            while(true)
+            {
+                Vector3 viewportRandomPosition = new Vector3(UnityEngine.Random.Range(0.0f, 1.0f), UnityEngine.Random.Range(0.0f, 1.0f), 0.0f);
+                Vector3 spawnPosition = Camera.main.ViewportToWorldPoint(viewportRandomPosition);
+
+                Instantiate(Resources.Load(resourcesName), spawnPosition, new Quaternion());
+
+                yield return new WaitForSeconds(delayTime);
+            }
+        }
+
         private IEnumerator TimeCoroutine()
         {
             while (true)
             {
-                timeCount++;
-                _hour = (timeCount%(60*60*24))/(60*60); 
-                _minute = (timeCount%(60*60))/(60);
-                _second = timeCount%(60);
-                timeText.text = _hour + ":" + _minute + ":" + _second;
+                object obj;
+                if (PhotonNetwork.room.CustomProperties.TryGetValue("Time", out obj))
+                {
+                    double time = (double)obj;
+                    double remainTime = time - PhotonNetwork.time;
+                    
+                    timeCount = ((int)remainTime);
+
+                    _hour = (timeCount % (60 * 60 * 24)) / (60 * 60);
+                    _minute = (timeCount % (60 * 60)) / (60);
+                    _second = timeCount % (60);
+                    timeText.text = _hour + ":" + _minute + ":" + _second;
+
+                    if( remainTime <= 0.0d && players.Count > 0)
+                    {
+                        players[0].RPC("RPC_FinishGame", PhotonTargets.All, true);
+                        break;
+                    }
+                }
                 yield return new WaitForSeconds(1f);
-                
             }
         }
         private IEnumerator waitThenCallback(float time, Action callback)

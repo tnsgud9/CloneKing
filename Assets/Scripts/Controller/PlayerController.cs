@@ -80,11 +80,16 @@ public class PlayerController : Photon.PunBehaviour, IPunObservable
            
         if( photonView.isMine)
         {
-            cam = GameObject.FindWithTag("MainCamera");
-            cam.GetComponent<CamFollow>().target = this.gameObject.transform;
+            BindMainCameraTarget();
 
             // PhotonNetwork.player.CustomProperties["Color"] = NetworkManager.Instance.GetPlayerColor();
         }
+    }
+
+    private void BindMainCameraTarget()
+    {
+        cam = GameObject.FindWithTag("MainCamera");
+        cam.GetComponent<CamFollow>().target = this.gameObject.transform;
     }
 
     private void Start()
@@ -124,6 +129,14 @@ public class PlayerController : Photon.PunBehaviour, IPunObservable
         {
             _playerJump.enabled = false;
             _playerMove.enabled = false;
+
+            _spriteRenderer.sortingOrder = NetworkManager.Instance.AssignNetworkIndex();
+        }
+        else
+        {
+            const int sortingMax = 10000;
+
+            _spriteRenderer.sortingOrder = sortingMax;
         }
     }
 
@@ -138,6 +151,16 @@ public class PlayerController : Photon.PunBehaviour, IPunObservable
         EmotionInput();
     }
 
+    [PunRPC]
+    void RPC_FinishGame( bool _is_victory )
+    {
+        Manager.GameManager.Instance.ReachGoalEvent(this.gameObject);
+
+        if( _is_victory)
+        {
+            BindMainCameraTarget();
+        }
+    }
 
     [PunRPC]
     void RPC_SpawnObject( string prefabName, double destroyTime, Vector3 position)
@@ -154,7 +177,7 @@ public class PlayerController : Photon.PunBehaviour, IPunObservable
     }
 
     [PunRPC]
-    void RPC_DoPush()
+    void RPC_DoSkill()
     {
         if( _playerPushHand != null)
         {
@@ -210,7 +233,7 @@ public class PlayerController : Photon.PunBehaviour, IPunObservable
         if (Input.GetKeyDown(KeyCode.LeftControl))
         {
             _playerPushHand.DoSkill();
-            photonView.RPC("RPC_DoPush", PhotonTargets.All);
+            photonView.RPC("RPC_DoSkill", PhotonTargets.All);
         }
 
         if (Input.GetKeyDown(KeyCode.R))
@@ -231,9 +254,11 @@ public class PlayerController : Photon.PunBehaviour, IPunObservable
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        Debug.Log("Trigger Enter");
         if(other.CompareTag("Goal"))
-            Manager.GameManager.Instance.ReachGoalEvent(this.gameObject);
+        {
+            photonView.RPC("RPC_FinishGame", PhotonTargets.All, true);
+        }
+        //Manager.GameManager.Instance.ReachGoalEvent(this.gameObject);
     }
 
     private IEnumerator waitThenCallback(float time, Action callback)

@@ -11,6 +11,13 @@ public class NetworkManager : Manager.SingletonPhoton<NetworkManager>
     private string _gameVersion = "Temp";
     private string _mapName = "Map2";
 
+    private int _networkIndex = 1;
+
+    public int AssignNetworkIndex()
+    {
+        return _networkIndex++;
+    }
+
     // Start is called before the first frame update
     protected new void Start()
     {
@@ -20,6 +27,7 @@ public class NetworkManager : Manager.SingletonPhoton<NetworkManager>
 
         LobbyManager.Instance.UpdateConnectionWidgets();
     }
+
 
     public override void OnConnectedToMaster()
     {
@@ -102,12 +110,7 @@ public class NetworkManager : Manager.SingletonPhoton<NetworkManager>
 
     public override void OnPhotonPlayerConnected(PhotonPlayer newPlayer)
     {
-       // Manager.GameManager.Instance.CreateNewPlayer();
-
-        //if (!newPlayer.IsMasterClient)
-        //{
-        //     SceneManager.LoadScene("Map1");
-        //}
+        // Manager.GameManager.Instance.CreateNewPlayer();
     }
 
     public void CreateRoom( string _room_name)
@@ -120,6 +123,8 @@ public class NetworkManager : Manager.SingletonPhoton<NetworkManager>
 
         PhotonNetwork.CreateRoom(_room_name, room_option, type_lobby); 
     }
+
+
 
     // Update is called once per frame
     void Update()
