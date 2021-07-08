@@ -440,6 +440,12 @@ TextureImporter:
   - first:
       213: -6150033036582198407
     second: Terrain Sliced (16x16)_1
+  - first:
+      213: 5021068500436517841
+    second: Terrain Sliced (16x16)_2
+  - first:
+      213: 7452560645506918919
+    second: Terrain Sliced (16x16)_3
   externalObjects: {}
   serializedVersion: 11
   mipmaps:
@@ -3600,6 +3606,48 @@ TextureImporter:
       bones: []
       spriteID: 973e9999981b6aaa0800000000000000
       internalID: -6150033036582198407
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Terrain Sliced (16x16)_2
+      rect:
+        serializedVersion: 2
+        x: 48
+        y: 0
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 1d30c69c23b6ea540800000000000000
+      internalID: 5021068500436517841
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Terrain Sliced (16x16)_3
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 0
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 70aee76fb60dc6760800000000000000
+      internalID: 7452560645506918919
       vertices: []
       indices: 
       edges: []
