@@ -75,7 +75,7 @@ namespace Manager
     {
         [SerializeField] private List<PhotonView> players;
         [SerializeField] private Text timeText;
-        private float playTime = 5;
+        private float playTime = 1800.0f;
 
         public GameObject player;
 
@@ -259,7 +259,7 @@ namespace Manager
                     double time = (double)obj;
                     double remainTime = time - PhotonNetwork.time;
                     
-                    timeCount = ((int)remainTime);
+                    timeCount = Mathf.Max(0, ((int)remainTime));
 
                     _hour = (timeCount % (60 * 60 * 24)) / (60 * 60);
                     _minute = (timeCount % (60 * 60)) / (60);

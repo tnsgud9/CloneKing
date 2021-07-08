@@ -124,6 +124,13 @@ public class NetworkManager : Manager.SingletonPhoton<NetworkManager>
         PhotonNetwork.CreateRoom(_room_name, room_option, type_lobby); 
     }
 
+    public void ExitRoom()
+    {
+        PhotonNetwork.DestroyPlayerObjects(PhotonNetwork.player);
+        PhotonNetwork.LeaveRoom();
+
+    }
+
 
 
     // Update is called once per frame

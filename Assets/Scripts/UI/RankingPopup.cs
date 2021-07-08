@@ -31,6 +31,8 @@ public class RankingPopup : MonoBehaviour
 
     public void OnClickExit()
     {
+        NetworkManager.Instance.ExitRoom();
+
         SceneManager.LoadScene("Lobby");
     }
 }
