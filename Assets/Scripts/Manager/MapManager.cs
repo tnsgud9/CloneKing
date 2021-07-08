@@ -6,26 +6,12 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-public class MapManager : MonoBehaviour
+public class MapManager : Manager.DestoryableSingleton<MapManager>
 {
     private FadeSystem fadeSystem;
     public Image fadeImage;
 
-    public static MapManager instance;
     public GameObject player;
-    
-    private void Awake()
-    {
-        if (!instance)
-        {
-            instance = this;
-            DontDestroyOnLoad(this.gameObject);
-        }
-        else
-        {
-            Destroy(this);
-        }
-    }
     
     void Start()
     {
