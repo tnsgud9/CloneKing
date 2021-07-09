@@ -18,11 +18,15 @@ public class ColorSelectItem : BaseSelectItem
         UpdateWidgets();
     }
 
-    public override void OnSelectedItem()
+    public override void OnUpdateSelection()
     {
         if (PhotonNetwork.connected)
         {
-            PhotonNetwork.player.CustomProperties["Color"] = _color;
+            if (_isSelection)
+            {
+                PhotonNetwork.player.CustomProperties["Color"] = _color;
+                PhotonNetwork.player.SetCustomProperties(PhotonNetwork.player.CustomProperties);
+            }
             UpdateWidgets();
         }
     }

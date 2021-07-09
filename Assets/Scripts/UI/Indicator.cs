@@ -5,6 +5,9 @@ using UnityEngine.UI;
 
 public class Indicator : MonoBehaviour
 {
+    public Vector3 nameTopPosition;
+    public Vector3 nameBottomPosition;
+
     private GameObject _targetObject = null;
     private SpriteRenderer _spriteRenderer= null;
     private NicknameViewer _nickNameViewer = null;
@@ -54,6 +57,21 @@ public class Indicator : MonoBehaviour
 
             _spriteRenderer.enabled = isVisible;
             _nickNameViewer.enabled = isVisible;
+
+            if( isVisible)
+            {
+                bool isFixedBottomPosition = viewportPosition.y >= 1.0f;
+
+                if( isFixedBottomPosition )
+                {
+                    _nickNameViewer.transform.localPosition = nameBottomPosition;
+                }
+                else
+                {
+                    _nickNameViewer.transform.localPosition = nameTopPosition;
+                }
+                
+            }
 
             viewportPosition.x = Mathf.Clamp(viewportPosition.x, expand_size, 1.0f - expand_size);
             viewportPosition.y = Mathf.Clamp(viewportPosition.y, expand_size, 1.0f - expand_size);

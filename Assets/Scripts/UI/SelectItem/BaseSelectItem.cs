@@ -38,7 +38,7 @@ public class BaseSelectItem : MonoBehaviour
         clickAction.Invoke(this);
     }
 
-    public virtual void OnSelectedItem()
+    public virtual void OnUpdateSelection()
     {
 
     }
@@ -49,7 +49,7 @@ public class BaseSelectItem : MonoBehaviour
         {
             _isSelection = isSelection;
 
-            OnSelectedItem();
+            OnUpdateSelection();
         }
     }
 }

@@ -1557,7 +1557,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fca981540c0d9d7449a55006a03460d5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  enterRoomPopup: {fileID: 4971872000083753394, guid: fc07bcc6b60edc643acf2315d34dc06b, type: 3}
   nickNameInputField: {fileID: 1437498516}
+  mainCanvas: {fileID: 572777901}
   messageBoxText: {fileID: 1176213325}
   joinButton: {fileID: 1617611022}
   createRoomButton: {fileID: 336038100}

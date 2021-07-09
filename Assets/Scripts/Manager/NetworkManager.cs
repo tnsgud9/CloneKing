@@ -36,6 +36,7 @@ public class NetworkManager : Manager.SingletonPhoton<NetworkManager>
         JoinLobby();
 
         PhotonNetwork.player.CustomProperties["Color"] = PlayerColor.Black;
+        PhotonNetwork.player.CustomProperties["CharaType"] = CharaType.VirtualGuy;
 
         base.OnConnectedToMaster();
     }
@@ -73,6 +74,16 @@ public class NetworkManager : Manager.SingletonPhoton<NetworkManager>
     {
         if (PhotonNetwork.connected)
         {
+            PhotonNetwork.JoinRoom(_room_name);
+            /*foreach ( var room in PhotonNetwork.GetRoomList())
+            {
+                if( room.Name == _room_name )
+                {
+                    PhotonNetwork.JoinRoom(room.);
+                }
+            }
+            */
+
             if (PhotonNetwork.GetRoomList().Length > 0)
             {
                 PhotonNetwork.JoinRoom(PhotonNetwork.GetRoomList()[0].Name);
@@ -91,13 +102,15 @@ public class NetworkManager : Manager.SingletonPhoton<NetworkManager>
 
         PhotonNetwork.isMessageQueueRunning = false;
 
-        if( PhotonNetwork.isMasterClient)
+        var mapName = PhotonNetwork.room.CustomProperties["MapName"] as string;
+
+        if ( PhotonNetwork.isMasterClient)
         {
-            PhotonNetwork.LoadLevel(_mapName);
+            PhotonNetwork.LoadLevel(mapName);
         }
         else
         {
-            SceneManager.LoadScene(_mapName);
+            SceneManager.LoadScene(mapName);
         }
 
         //      SceneManager.LoadScene("Map1");
@@ -113,9 +126,12 @@ public class NetworkManager : Manager.SingletonPhoton<NetworkManager>
         // Manager.GameManager.Instance.CreateNewPlayer();
     }
 
-    public void CreateRoom( string _room_name)
+    public void CreateRoom( string _room_name, string _map_name)
     {
         RoomOptions room_option = new RoomOptions();
+
+        room_option.CustomRoomProperties = new ExitGames.Client.Photon.Hashtable();
+        room_option.CustomRoomProperties["MapName"] = _map_name;
         room_option.MaxPlayers = 10;
 
         TypedLobby type_lobby = new TypedLobby();

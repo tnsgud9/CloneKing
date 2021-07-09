@@ -21,11 +21,15 @@ public class CharaViewerItem : BaseSelectItem
     }
 
 
-    public override void OnSelectedItem()
+    public override void OnUpdateSelection()
     {
         if (PhotonNetwork.connected)
         {
-            PhotonNetwork.player.CustomProperties["CharaType"] = _charaType;
+            if (_isSelection)
+            {
+                PhotonNetwork.player.CustomProperties["CharaType"] = _charaType;
+            }
+
             UpdateWidgets();
         }
     }
