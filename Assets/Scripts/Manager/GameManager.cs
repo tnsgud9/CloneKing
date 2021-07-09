@@ -96,7 +96,7 @@ namespace Manager
             }
         }
     }
-    
+
     public class GameManager : DestoryableSingleton<GameManager>
     {
         [SerializeField] private List<PhotonView> players;
@@ -104,19 +104,19 @@ namespace Manager
         private float playTime = 1800.0f;
 
         public GameObject player;
-        
+
         #region Timer Variables
         private IEnumerator _gameTimer;
         public int timeCount = 0;
-        private int _hour=0, _minute=0, _second=0;
+        private int _hour = 0, _minute = 0, _second = 0;
         #endregion
-        
+
         public List<PhotonView> GetPlayers() { return players; }
 
         // Comment : 타이머의 관련된 변수는 추후에 networkManager에서 관리가 필요합니다.
         //           접속시점이 기준이 아님.
         private void Start()
-        {            
+        {
             player = Resources.Load("Prefabs/PlayerChara") as GameObject;
 
             InitializeComponents();
@@ -147,7 +147,7 @@ namespace Manager
         {
             var photonView = player.GetPhotonView();
 
-            if ( photonView != null)
+            if (photonView != null)
             {
                 players.Add(photonView);
 
@@ -162,19 +162,19 @@ namespace Manager
         {
             const float tolerance = 0.3f;
 
-            players.Sort((lhs, rhs) => { return -lhs.gameObject.transform.position.y.CompareTo( rhs.gameObject.transform.position.y); });
+            players.Sort((lhs, rhs) => { return -lhs.gameObject.transform.position.y.CompareTo(rhs.gameObject.transform.position.y); });
 
             int rank = 1;
 
             PhotonView prevPlayer = null;
             int prevPlayerRank = 1;
 
-            foreach ( var player in players)
+            foreach (var player in players)
             {
                 int currentRank = rank++;
                 var photonView = player;
 
-                if( photonView != null && photonView.isMine)
+                if (photonView != null && photonView.isMine)
                 {
                     int prevRank = -1;
 
@@ -191,7 +191,7 @@ namespace Manager
                     prevPlayer = player;
                     prevPlayerRank = currentRank;
 
-                    if ( currentRank != prevRank)
+                    if (currentRank != prevRank)
                     {
                         photonView.owner.CustomProperties["Rank"] = currentRank;
                         photonView.owner.SetCustomProperties(photonView.owner.CustomProperties);
@@ -199,7 +199,7 @@ namespace Manager
                 }
             }
         }
-        
+
         public void ReachGoalEvent(GameObject player)
         {
             StopCoroutine(_gameTimer);
@@ -227,19 +227,34 @@ namespace Manager
             }
 
         }
-        
+
         //  Todo: 네트워크 접속이 될때 플레이어 생성 함수를 호출하면 될거 같습니다.
         public void SpawnPlayer()
         {
-            StartCoroutine(waitThenCallback(1f,() =>
-            {
-                Instantiate(player);
-            }));
+            StartCoroutine(waitThenCallback(1f, () =>
+             {
+                 Instantiate(player);
+             }));
         }
 
         public void CreateNewPlayer()
         {
-            const string player_prefab_name = "Prefabs/PlayerChara";
+            CharaType charaType = CharaType.VirtualGuy;
+
+            object obj;
+            if (PhotonNetwork.player.CustomProperties.TryGetValue("CharaType", out obj))
+            {
+                charaType = (CharaType)obj;
+            }
+
+            string player_prefab_name = "Prefabs/PlayerChara";
+            switch ( charaType)
+            {
+                case CharaType.VirtualGuy:
+                    player_prefab_name = "Prefabs/PlayerChara Prototype";
+                    break;
+            }
+
             Vector3 start_location = new Vector3(0, 0, 0);
 
             PhotonNetwork.Instantiate(player_prefab_name, start_location, Quaternion.identity, 0);

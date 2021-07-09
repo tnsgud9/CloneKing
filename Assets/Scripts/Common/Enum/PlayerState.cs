@@ -9,9 +9,15 @@ public enum PlayerColor
     SkyBlue,
     LightGreen,
     Gray,
-    Black,
-    Max
+    Black
 };
+
+public enum CharaType
+{
+    VirtualGuy,
+    Prince,
+   // Devil
+}
 
 public static class ExtensionMethod
 {

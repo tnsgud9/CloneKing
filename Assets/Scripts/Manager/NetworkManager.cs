@@ -128,9 +128,7 @@ public class NetworkManager : Manager.SingletonPhoton<NetworkManager>
     {
         PhotonNetwork.DestroyPlayerObjects(PhotonNetwork.player);
         PhotonNetwork.LeaveRoom();
-
     }
-
 
 
     // Update is called once per frame
