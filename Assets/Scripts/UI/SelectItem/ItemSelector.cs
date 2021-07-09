@@ -55,8 +55,6 @@ public class ItemSelector : MonoBehaviour
                 _items.Add(baseSelectItem);
             }
         }
-
-        OnSelectedItem(_items[0]);
     }
 
     private void InitializeComponents()
