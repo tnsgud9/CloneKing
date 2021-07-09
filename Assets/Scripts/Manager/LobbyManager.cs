@@ -6,14 +6,15 @@ using UnityEngine.UI;
 
 public class LobbyManager : Manager.Singleton<LobbyManager>
 {
-    private string _roomName = "Temp";
-    public GameObject enterRoomPopup = null;
+    public GameObject enterRoomPopupOrigin = null;
     public InputField nickNameInputField;
 
     public Canvas mainCanvas;
     public Text messageBoxText;
     public Button joinButton;
     public Button createRoomButton;
+
+    private GameObject _roomPopup = null;
 
     public void UpdateConnectionWidgets()
     {
@@ -46,22 +47,25 @@ public class LobbyManager : Manager.Singleton<LobbyManager>
     {
         NetworkManager.Instance.SetupNickName(nickNameInputField.text);
 
-        GameObject go = Instantiate(enterRoomPopup);
-        go.transform.SetParent(mainCanvas.transform, false);
-        go.GetComponent<EnterRoomPopup>().SetupPopup(false);
+        ShowEnterRoomPopup(false);
     }
 
     private void OnClickedCreateRoomButton()
     {
         NetworkManager.Instance.SetupNickName(nickNameInputField.text);
 
-        GameObject go = Instantiate(enterRoomPopup);
-        go.transform.SetParent(mainCanvas.transform, false);
-        go.GetComponent<EnterRoomPopup>().SetupPopup(true);
+        ShowEnterRoomPopup( true );
 
-        /*
-        NetworkManager.Instance.CreateRoom(_roomName);
-        */
+    }
+
+    private void ShowEnterRoomPopup( bool is_create_room)
+    {
+        if (_roomPopup == null)
+        {
+            _roomPopup = Instantiate(enterRoomPopupOrigin);
+            _roomPopup.transform.SetParent(mainCanvas.transform, false);
+            _roomPopup.GetComponent<EnterRoomPopup>().SetupPopup(is_create_room);
+        }
     }
 
 }

@@ -16,13 +16,12 @@ public class EnterRoomPopup : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        StartCoroutine(DriveAppear());
     }
 
     // Update is called once per frame
     void Update()
     {
-        
     }
 
     public void SetupPopup( bool isCreateRoomPopup)
@@ -55,5 +54,24 @@ public class EnterRoomPopup : MonoBehaviour
     public void Close()
     {
         Destroy(gameObject);
+    }
+
+    private IEnumerator DriveAppear()
+    {
+        float time = 0.0f;
+
+        Vector3 startScale = Vector3.zero;
+        Vector3 endScale = Vector3.one;
+
+        while( time <= 1.0f)
+        {
+            time += Time.deltaTime * 3.0f;
+
+            transform.localScale = Vector3.Lerp(startScale, endScale, EasingFunction.EaseOutExpo(0.0f, 1.0f, Mathf.Clamp01(time)));
+
+            yield return new WaitForEndOfFrame();
+        }
+
+        transform.localScale = endScale;
     }
 }
