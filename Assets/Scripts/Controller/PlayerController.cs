@@ -9,7 +9,7 @@ public class PlayerController : Photon.PunBehaviour, IPunObservable
 {
     //Todo : 불필요한 변수들 제거 필요.
     private PlayerMove _playerMove;
-    private PlayerPushHand _playerPushHand;
+    private BaseSkill _playerSkill;
     private PlayerJump _playerJump;
     private PlayerEmotionControl _emotionControl;
     private FadeSystem fadeSystem;
@@ -95,6 +95,7 @@ public class PlayerController : Photon.PunBehaviour, IPunObservable
     private void Start()
     {
         InitializeComponents();
+        InitializeSkills();
         InitializeWidgets();
 
         _playerJump.SetPlaySounds(photonView.isMine);
@@ -119,7 +120,7 @@ public class PlayerController : Photon.PunBehaviour, IPunObservable
     private void InitializeComponents()
     {
         _playerJump = GetComponent<PlayerJump>();
-        _playerPushHand = GetComponent<PlayerPushHand>();   
+        _playerSkill = GetComponent<BaseSkill>();
         _playerMove = GetComponent<PlayerMove>();
         _spriteRenderer = GetComponent<SpriteRenderer>();
         _emotionControl = GetComponent<PlayerEmotionControl>();
@@ -179,9 +180,9 @@ public class PlayerController : Photon.PunBehaviour, IPunObservable
     [PunRPC]
     void RPC_DoSkill()
     {
-        if( _playerPushHand != null)
+        if(_playerSkill != null)
         {
-            _playerPushHand.DoSkill();
+            _playerSkill.DoSkill();
         }
     }
 
@@ -203,6 +204,42 @@ public class PlayerController : Photon.PunBehaviour, IPunObservable
         {
             emotion_viewer.SetupEmotion(emotionType, 2.5f);
         }
+    }
+
+    private void InitializeSkills()
+    {
+        var prevSkill =GetComponent<BaseSkill>();
+        if (prevSkill != null )
+        {
+            Destroy(prevSkill);
+        }
+
+        int outParam = 0;
+        photonView.TryGetValueToInt("SkillType", out outParam);
+
+        if(outParam < 0)
+        {
+            outParam = 0;
+        }
+
+        SkillType equipSkill = (SkillType)outParam;
+        
+        Type skillType = typeof(PlayerPushHand);
+        switch (equipSkill)
+        {
+            case SkillType.PushHand:
+                skillType = typeof(PlayerPushHand);
+                break;
+
+            case SkillType.SelfExplosion:
+                skillType = typeof(SelfExplosionSkill);
+                break;
+        }
+
+        var baseSkill = gameObject.AddComponent(skillType) as BaseSkill;
+
+        _playerSkill = baseSkill;
+        _playerSkill.BindPlayerController(this);
     }
 
     private void JumpInput()
@@ -232,14 +269,17 @@ public class PlayerController : Photon.PunBehaviour, IPunObservable
     {
         if (Input.GetKeyDown(KeyCode.LeftControl))
         {
-            _playerPushHand.DoSkill();
-            photonView.RPC("RPC_DoSkill", PhotonTargets.All);
+            if (_playerSkill.IsExpiredCooltime())
+            {
+                _playerSkill.DoSkill();
+                photonView.RPC("RPC_DoSkill", PhotonTargets.All);
+            }
         }
 
-        if (Input.GetKeyDown(KeyCode.R))
-        {
-            photonView.RPC("RPC_SpawnObject", PhotonTargets.All,"Prefabs/Object/Wall", PhotonNetwork.time + 15.0d, transform.position + Vector3.down * 0.35f);
-        }
+        //if (Input.GetKeyDown(KeyCode.R))
+        //{
+        //    photonView.RPC("RPC_SpawnObject", PhotonTargets.All,"Prefabs/Object/Wall", PhotonNetwork.time + 15.0d, transform.position + Vector3.down * 0.35f);
+        //}
     }
 
     private void EmotionInput()

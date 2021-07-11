@@ -35,8 +35,22 @@ public class NetworkManager : Manager.SingletonPhoton<NetworkManager>
 
         JoinLobby();
 
-        PhotonNetwork.player.CustomProperties["Color"] = PlayerColor.Black;
-        PhotonNetwork.player.CustomProperties["CharaType"] = CharaType.VirtualGuy;
+        int dummy= 0;
+
+        if( !PhotonNetwork.player.TryGetValueToInt( "Color", out dummy))
+        {
+            PhotonNetwork.player.CustomProperties["Color"] = PlayerColor.Black;
+        }
+
+        if (!PhotonNetwork.player.TryGetValueToInt("CharaType", out dummy))
+        {
+            PhotonNetwork.player.CustomProperties["CharaType"] = CharaType.VirtualGuy;
+        }
+
+        if (!PhotonNetwork.player.TryGetValueToInt("SkillType", out dummy))
+        {
+            PhotonNetwork.player.CustomProperties["SkillType"] = SkillType.PushHand;
+        }
 
         base.OnConnectedToMaster();
     }

@@ -13,22 +13,34 @@ public class PlayerPushHand : BaseSkill
     public GameObject pushHand;
     public float pushForce;
     public Sprite playerPushSprite;
-    
-    
-    public GameObject gauge;
-    private Animation _gagueAnimation;
 
     
     private void Start()
     {
+        coolTime = 10.0f;
+        delayTime = 1.0f;
+        pushForce = 5.0f;
+
         InitializeComponents();
     }
 
     private void InitializeComponents()
     {
+        pushHand = Resources.Load("Prefabs/Player/Stop Hand") as GameObject;
+        playerPushSprite = Resources.Load<Sprite>("Sprites/Characters/VirtualGuy/Stop");
+        
+        int charaType;
+        if(_playerController != null && _playerController.photonView.TryGetValueToInt("CharaType", out charaType))
+        {
+            switch( (CharaType)charaType )
+            {
+                case CharaType.Prince:
+                    pushHand = Resources.Load("Prefabs/Player/Stop Hand - Shield") as GameObject;
+                    break;
+            }
+        }
+
         //주의!! player가 갖고 있는 reload bar의 구성이 변경되면 오류가 발생할 수 있음.
-        _gagueAnimation = gauge.transform.GetChild(0).transform.GetChild(1).GetComponent<Animation>();
-        gauge.SetActive(false);
         _spriteRenderer = GetComponent<SpriteRenderer>();
         _animator = GetComponent<Animator>();
         _playerJump = GetComponent<PlayerJump>();
@@ -46,9 +58,6 @@ public class PlayerPushHand : BaseSkill
         _spriteRenderer.sprite = playerPushSprite;
 
         InstantiatePushHand();
-
-        gauge.SetActive(true);
-        _gagueAnimation.Play();
     }
 
     protected override void OnFinishDelayAction()
@@ -63,8 +72,6 @@ public class PlayerPushHand : BaseSkill
     protected override void OnActivation()
     {
         base.OnActivation();
-
-        gauge.SetActive(false);
     }
 
     private void InstantiatePushHand()
@@ -83,7 +90,7 @@ public class PlayerPushHand : BaseSkill
             position.x += 0.065f;
             direction = Vector2.right;
         }
-
+        
         GameObject go = Instantiate(pushHand, position, quaternion);
 
         var collider        = GetComponent<Collider2D>();

@@ -19,6 +19,12 @@ public enum CharaType
    // Devil
 }
 
+public enum SkillType
+{
+    PushHand,
+    SelfExplosion,
+}
+
 public static class ExtensionMethod
 {
     public static Color PlayerColorToColor( this PlayerColor player_color)

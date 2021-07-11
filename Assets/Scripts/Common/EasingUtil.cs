@@ -67,6 +67,19 @@ public static class EasingFunction
         output = -1;
         return false;
     }
+    public static bool TryGetValueToInt(this PhotonPlayer player, string key, out int output)
+    {
+        object obj;
+        if (player.CustomProperties.TryGetValue(key, out obj))
+        {
+            output = (int)obj;
+            return true;
+        }
+
+        output = -1;
+        return false;
+
+    }
     public static float Linear(float start, float end, float value)
     {
         return Mathf.Lerp(start, end, value);
