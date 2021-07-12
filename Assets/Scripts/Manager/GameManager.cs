@@ -253,6 +253,9 @@ namespace Manager
                 case CharaType.VirtualGuy:
                     player_prefab_name = "Prefabs/PlayerChara Prototype";
                     break;
+                case CharaType.Devil:
+                    player_prefab_name = "Prefabs/PlayerChara Prince2";
+                    break;
             }
 
             Vector3 start_location = new Vector3(0, 0, 0);

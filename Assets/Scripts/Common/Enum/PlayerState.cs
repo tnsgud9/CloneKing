@@ -16,7 +16,7 @@ public enum CharaType
 {
     VirtualGuy,
     Prince,
-   // Devil
+    Devil
 }
 
 public enum SkillType

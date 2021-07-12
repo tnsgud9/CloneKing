@@ -49,7 +49,7 @@ public class NetworkManager : Manager.SingletonPhoton<NetworkManager>
 
         if (!PhotonNetwork.player.TryGetValueToInt("SkillType", out dummy))
         {
-            PhotonNetwork.player.CustomProperties["SkillType"] = SkillType.SelfExplosion;
+            PhotonNetwork.player.CustomProperties["SkillType"] = SkillType.PushHand;
         }
 
         base.OnConnectedToMaster();
