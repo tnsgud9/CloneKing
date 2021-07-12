@@ -80,6 +80,12 @@ public static class EasingFunction
         return false;
 
     }
+
+    public static Vector3 ConvertToVector3D( this Vector2 vec)
+    {
+        return new Vector3(vec.x, vec.y, 0.0f);
+    }
+
     public static float Linear(float start, float end, float value)
     {
         return Mathf.Lerp(start, end, value);

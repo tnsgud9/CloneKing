@@ -25,6 +25,16 @@ public class PlayerController : Photon.PunBehaviour, IPunObservable
     // MoveInput Variables
     private float horizontal = 0f;
     
+    public Vector2 GetForwardVector2D()
+    {
+        if( _spriteRenderer != null && _spriteRenderer.flipX)
+        {
+            return new Vector2(-1.0f, 0.0f);
+        }
+
+        return new Vector2(1.0f, 0.0f);
+    }
+
     public override void OnPhotonInstantiate(PhotonMessageInfo info)
     {
         base.OnPhotonInstantiate(info);
@@ -145,6 +155,7 @@ public class PlayerController : Photon.PunBehaviour, IPunObservable
         if (!photonView.isMine)
             return;
 
+        PopupInput();
         JumpInput();
         MoveInput();
         SkillInput();
@@ -163,7 +174,7 @@ public class PlayerController : Photon.PunBehaviour, IPunObservable
     }
 
     [PunRPC]
-    void RPC_SpawnObject( string prefabName, double destroyTime, Vector3 position)
+    void RPC_SpawnObject( string prefabName, double spawnTime, Vector3 position)
     {
         GameObject go = Resources.Load(prefabName) as GameObject;
 
@@ -171,7 +182,7 @@ public class PlayerController : Photon.PunBehaviour, IPunObservable
 
         if (SpawnObject != null)
         {
-            SpawnObject.GetComponent<SynchronizedObject>().SetupObject(destroyTime);
+            SpawnObject.GetComponent<SynchronizedObject>().SetupObject(spawnTime);
             SpawnObject.transform.position = position;
         }
     }
@@ -233,12 +244,25 @@ public class PlayerController : Photon.PunBehaviour, IPunObservable
             case SkillType.SelfExplosion:
                 skillType = typeof(SelfExplosionSkill);
                 break;
+
+            case SkillType.SpawnGrowingTower:
+                skillType = typeof(SpawnSkill);
+                break;
+
         }
 
         var baseSkill = gameObject.AddComponent(skillType) as BaseSkill;
 
         _playerSkill = baseSkill;
         _playerSkill.BindPlayerController(this);
+    }
+
+    private void PopupInput()
+    {
+        if (Input.GetKey(KeyCode.Escape))
+        {
+            Manager.GameManager.Instance.CreateExitPopup();
+        }
     }
 
     private void JumpInput()

@@ -43,6 +43,16 @@ public class LobbyManager : Manager.Singleton<LobbyManager>
         createRoomButton.onClick.AddListener(OnClickedCreateRoomButton);
     }
 
+    public void OnClickedExitGame()
+    {
+#if UNITY_EDITOR
+        UnityEditor.EditorApplication.isPlaying = false;
+#else
+        Application.Quit(); // 어플리케이션 종료
+#endif
+
+    }
+
     private void OnClickedJoinButton()
     {
         NetworkManager.Instance.SetupNickName(nickNameInputField.text);

@@ -5,12 +5,13 @@ using Photon;
 
 public class SynchronizedObject : Photon.PunBehaviour
 {
-    private double _destroyTime = 15.0f;
+    public float lifeTime = 15.0f;
 
+    private double _destroyTime = 0.0f;
 
-    public void SetupObject(double destroyTime  )
+    public void SetupObject(double spawnTime )
     {
-        _destroyTime = destroyTime;
+        _destroyTime = spawnTime + lifeTime;
     }
 
 

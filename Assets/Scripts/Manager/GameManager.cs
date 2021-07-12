@@ -102,7 +102,9 @@ namespace Manager
         [SerializeField] private List<PhotonView> players;
         [SerializeField] private Text timeText;
         private float playTime = 1800.0f;
+        private Canvas _canvas;
 
+        public GameObject currentPopup = null;
         public GameObject player;
 
         #region Timer Variables
@@ -132,6 +134,7 @@ namespace Manager
 
         private void InitializeComponents()
         {
+            _canvas = FindObjectOfType<Canvas>();
             timeText = GameObject.Find("timer text").GetComponent<Text>();
             timeText.gameObject.SetActive(true);
 
@@ -215,17 +218,27 @@ namespace Manager
         private void CreateRankingPopup()
         {
             const string rankingPopupPath = "Prefabs/UI/RankingPopup";
-
-            var canvas = FindObjectOfType<Canvas>();
-
             GameObject go = Instantiate(Resources.Load(rankingPopupPath) as GameObject);
 
-            Debug.Log(go);
-            if (canvas != null)
+            if (_canvas != null)
             {
-                go.transform.SetParent(canvas.transform, false);
+                go.transform.SetParent(_canvas.transform, false);
             }
 
+        }
+
+        public void CreateExitPopup()
+        {
+            if (currentPopup == null)
+            {
+                const string exitPopupPath = "Prefabs/UI/ExitPopup";
+                currentPopup = Instantiate(Resources.Load(exitPopupPath) as GameObject);
+
+                if (_canvas != null)
+                {
+                    currentPopup.transform.SetParent(_canvas.transform, false);
+                }
+            }
         }
 
         //  Todo: 네트워크 접속이 될때 플레이어 생성 함수를 호출하면 될거 같습니다.
