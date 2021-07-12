@@ -104,6 +104,7 @@ namespace Manager
         private float playTime = 1800.0f;
         private Canvas _canvas;
 
+        public GameObject princessCage = null;
         public GameObject currentPopup = null;
         public GameObject player;
 
@@ -206,7 +207,7 @@ namespace Manager
         public void ReachGoalEvent(GameObject player)
         {
             StopCoroutine(_gameTimer);
-            StartCoroutine(DriveVictoryParticle());
+            StartCoroutine(DriveVictoryEvent());
             StartCoroutine(waitThenCallback(5.0f, () => { CreateRankingPopup(); }));
 
             foreach (PhotonView photonView in players)
@@ -289,19 +290,51 @@ namespace Manager
         }
 
 
-        private IEnumerator DriveVictoryParticle()
+        private IEnumerator DriveVictoryEvent()
         {
             const float delayTime= 2.0f;
+            const float disappearSpeed = 0.15f;
+
             const string resourcesName ="Prefabs/Effects/Fireworks";
 
-            while(true)
+            float elapsedTime = 0.0f;
+
+            if(princessCage ==null)
             {
-                Vector3 viewportRandomPosition = new Vector3(UnityEngine.Random.Range(0.0f, 1.0f), UnityEngine.Random.Range(0.0f, 1.0f), 0.0f);
-                Vector3 spawnPosition = Camera.main.ViewportToWorldPoint(viewportRandomPosition);
+                princessCage = GameObject.Find("pixel cage");
+            }
 
-                Instantiate(Resources.Load(resourcesName), spawnPosition, new Quaternion());
+            SpriteRenderer cageSpriteComponent = null;
+            if (princessCage != null )
+            {
+                cageSpriteComponent = princessCage.GetComponent<SpriteRenderer>();
+            }
+            
+            while (true)
+            {
+                elapsedTime += Time.deltaTime;
+                if( elapsedTime >= delayTime)
+                {
+                    elapsedTime = 0.0f;
+                    // fireworks
+                    Vector3 viewportRandomPosition = new Vector3(UnityEngine.Random.Range(0.0f, 1.0f), UnityEngine.Random.Range(0.0f, 1.0f), 0.0f);
+                    Vector3 spawnPosition = Camera.main.ViewportToWorldPoint(viewportRandomPosition);
 
-                yield return new WaitForSeconds(delayTime);
+                    Instantiate(Resources.Load(resourcesName), spawnPosition, new Quaternion());
+                }
+
+                // DriveCage
+                if (cageSpriteComponent != null)
+                {
+                    cageSpriteComponent.color = cageSpriteComponent.color - new Color(0.0f, 0.0f, 0.0f, 1.0f) * disappearSpeed * Time.deltaTime;
+
+                    if (cageSpriteComponent.color.a <= 0.0f)
+                    {
+                        Destroy(princessCage);
+                    }
+                }
+
+                yield return new WaitForEndOfFrame();
             }
         }
 
