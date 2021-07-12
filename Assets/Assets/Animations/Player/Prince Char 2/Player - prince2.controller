@@ -144,7 +144,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: 7400000, guid: 5e9273957d55e0949bee528e919f8783, type: 2}
+  m_Motion: {fileID: 7400000, guid: ad76d66a7047c4e43a1ae8d21ecd4837, type: 2}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 
@@ -197,7 +197,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: 7400000, guid: 7da59563812a3c543a17072188bf4e80, type: 2}
+  m_Motion: {fileID: 7400000, guid: 2e9f6452cda941248933b07f8ce1801b, type: 2}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 
@@ -234,7 +234,7 @@ AnimatorController:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Player - prince
+  m_Name: Player - prince2
   serializedVersion: 5
   m_AnimatorParameters:
   - m_Name: isMove
@@ -432,7 +432,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: 7400000, guid: c9924d95d895b894383eabf9cd742196, type: 2}
+  m_Motion: {fileID: 7400000, guid: ede3d6eea6ee3774c9c76054cfddc989, type: 2}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 
@@ -474,10 +474,10 @@ AnimatorStateMachine:
     m_Position: {x: 290, y: 120, z: 0}
   - serializedVersion: 1
     m_State: {fileID: -2586746232449863581}
-    m_Position: {x: 280, y: 10, z: 0}
+    m_Position: {x: 300, y: 10, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 5422383453441971197}
-    m_Position: {x: 300, y: -110, z: 0}
+    m_Position: {x: 300, y: -120, z: 0}
   - serializedVersion: 1
     m_State: {fileID: -3261809356820880897}
     m_Position: {x: 30, y: -110, z: 0}

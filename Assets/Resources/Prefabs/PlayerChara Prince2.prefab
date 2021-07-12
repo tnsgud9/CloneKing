@@ -465,7 +465,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 1
-  m_Sprite: {fileID: 21300000, guid: 62e5a3ec8d4de084db48b565f5fbdf1e, type: 3}
+  m_Sprite: {fileID: 21300000, guid: b664f3095b4952847b10c75abed53fbf, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -532,7 +532,7 @@ BoxCollider2D:
   m_Offset: {x: 0, y: -0.0019207671}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.5, y: 0.425}
+    pivot: {x: 0.44, y: 0.425}
     oldSize: {x: 0.3764706, y: 0.3764706}
     newSize: {x: 0.96, y: 0.96}
     adaptiveTilingThreshold: 0.5
@@ -590,12 +590,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 530cfaa6ce17527458d0befbf1f6bb2c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  gauge: {fileID: 4995436200939261128}
   coolTime: 10
   delayTime: 0.7
   pushHand: {fileID: 1013718522952890257, guid: a6f00b783f9a5384eaf5f676a2202cf0, type: 3}
   pushForce: 5
   playerPushSprite: {fileID: 21300000, guid: c188ea16fc6aaae44876101fdcd49010, type: 3}
-  gauge: {fileID: 4995436200939261128}
 --- !u!114 &4995436199316367694
 MonoBehaviour:
   m_ObjectHideFlags: 0
