@@ -27,8 +27,9 @@ public class PlayerPushHand : BaseSkill
 
     private void InitializeCharaResource()
     {
-        pushHand = Resources.Load("Prefabs/Player/Stop Hand") as GameObject;
-        playerPushSprite = Resources.Load<Sprite>("Sprites/Characters/VirtualGuy/Stop");
+        string pushHandPath = "Prefabs/Player/Stop Hand";
+        string playerPushPath = "Sprites/Characters/VirtualGuy/Stop";
+
 
         int charaType;
         if (_playerController != null && _playerController.photonView.TryGetValueToInt("CharaType", out charaType))
@@ -36,11 +37,19 @@ public class PlayerPushHand : BaseSkill
             switch ((CharaType)charaType)
             {
                 case CharaType.Prince:
-                    playerPushSprite = Resources.Load<Sprite>("Sprites/Characters/Prince/Stop");
-                    pushHand = Resources.Load("Prefabs/Player/Stop Hand - Shield") as GameObject;
+                    playerPushPath = "Sprites/Characters/Prince/Stop";
+                    pushHandPath = "Prefabs/Player/Stop Hand - Shield";
+                    break;
+
+                case CharaType.Devil:
+                    playerPushPath = "Sprites/Characters/Prince2/Stop";
+                    pushHandPath = "Prefabs/Player/Stop Hand - Shield";
                     break;
             }
         }
+
+        pushHand = Resources.Load( pushHandPath) as GameObject;
+        playerPushSprite = Resources.Load<Sprite>(playerPushPath);
     }
 
 
