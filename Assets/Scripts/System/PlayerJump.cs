@@ -81,7 +81,12 @@ public class PlayerJump : MonoBehaviour
     //JumpEvent는 PlayerController에서 호출됨.
     public bool JumpEvent( JumpState state )
     {
-        switch( state)
+        if (!enabled)
+        {
+            return false;
+        }
+
+        switch ( state)
         {
             case JumpState.Ready:
                 if(_canJump)

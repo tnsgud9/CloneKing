@@ -18,28 +18,34 @@ public class PlayerPushHand : BaseSkill
     private void Start()
     {
         coolTime = 10.0f;
-        delayTime = 1.0f;
+        delayTime = 0.7f;
         pushForce = 5.0f;
 
         InitializeComponents();
+        InitializeCharaResource();
     }
 
-    private void InitializeComponents()
+    private void InitializeCharaResource()
     {
         pushHand = Resources.Load("Prefabs/Player/Stop Hand") as GameObject;
         playerPushSprite = Resources.Load<Sprite>("Sprites/Characters/VirtualGuy/Stop");
-        
+
         int charaType;
-        if(_playerController != null && _playerController.photonView.TryGetValueToInt("CharaType", out charaType))
+        if (_playerController != null && _playerController.photonView.TryGetValueToInt("CharaType", out charaType))
         {
-            switch( (CharaType)charaType )
+            switch ((CharaType)charaType)
             {
                 case CharaType.Prince:
+                    playerPushSprite = Resources.Load<Sprite>("Sprites/Characters/Prince/Stop");
                     pushHand = Resources.Load("Prefabs/Player/Stop Hand - Shield") as GameObject;
                     break;
             }
         }
+    }
 
+
+    private void InitializeComponents()
+    {
         //주의!! player가 갖고 있는 reload bar의 구성이 변경되면 오류가 발생할 수 있음.
         _spriteRenderer = GetComponent<SpriteRenderer>();
         _animator = GetComponent<Animator>();

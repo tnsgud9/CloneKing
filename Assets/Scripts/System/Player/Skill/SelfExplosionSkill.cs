@@ -5,10 +5,8 @@ using UnityEngine;
 public class SelfExplosionSkill : BaseSkill
 {
     public float explosionWaitForTime = 5.0f;
-    public float redColorTwinkleSpeed = 4.0f;
 
-    private SpriteRenderer _spriteRenderer;
-
+    private GameObject _originExplosionObject;
 
     // Start is called before the first frame update
     void Start()
@@ -16,7 +14,7 @@ public class SelfExplosionSkill : BaseSkill
         coolTime = 10.0f;
         delayTime = 0.0f;
 
-        InitializeComponents();
+        LoadResources();
     }
 
     // Update is called once per frame
@@ -25,10 +23,9 @@ public class SelfExplosionSkill : BaseSkill
         
     }
 
-    private void InitializeComponents()
+    private void LoadResources()
     {
-        _spriteRenderer = GetComponent<SpriteRenderer>();
-
+        _originExplosionObject = Resources.Load<GameObject>("Prefabs/Object/ExplosionObject");
     }
 
 
@@ -36,7 +33,9 @@ public class SelfExplosionSkill : BaseSkill
     {
         base.OnStartAction();
 
-        StartCoroutine(DriveExplosionEffects());
+        var explosionObject = Instantiate(_originExplosionObject, transform, false).GetComponent<ExplosionObject>();
+
+        explosionObject.StartExplosion(gameObject, explosionWaitForTime);
     }
 
     protected override void OnFinishDelayAction()
@@ -49,43 +48,4 @@ public class SelfExplosionSkill : BaseSkill
         base.OnActivation();
     }
 
-
-    private IEnumerator DriveExplosionEffects()
-    {
-        float duration = 0.0f;
-
-        float colorDeltaFlip = 1.0f;
-        float currentRedWidget = 0.0f;
-
-        while (duration < explosionWaitForTime)
-        {
-            currentRedWidget += redColorTwinkleSpeed * Time.deltaTime * colorDeltaFlip;
-
-            if( currentRedWidget <= 0.0f)
-            {
-                currentRedWidget = 0.0f;
-                colorDeltaFlip *= -1.0f;
-            }
-
-
-            if (currentRedWidget >= 1.0f)
-            {
-                currentRedWidget = 1.0f;
-                colorDeltaFlip *= -1.0f;
-            }
-
-            _spriteRenderer.color = new Color(1.0f, 1.0f - currentRedWidget, 1.0f - currentRedWidget, 1.0f);
-            
-            duration += Time.deltaTime;
-
-            yield return new WaitForEndOfFrame();
-        }
-
-        ExplodeSelf();
-    }
-
-    private void ExplodeSelf()
-    {
-
-    }
 }

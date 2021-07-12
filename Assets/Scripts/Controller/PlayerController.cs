@@ -15,7 +15,6 @@ public class PlayerController : Photon.PunBehaviour, IPunObservable
     private FadeSystem fadeSystem;
     private SpriteRenderer _spriteRenderer;
 
-
     //Network
     private PhotonTransformView _photonTransformView;
 

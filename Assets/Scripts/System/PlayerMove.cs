@@ -35,8 +35,11 @@ public class PlayerMove : MonoBehaviour
     //MoveEvent는 PlayerController에서 호출됨.
     public void MoveEvent(float horizontal)
     {
-        MoveUpdate(horizontal);
-        AnimationUpdate(horizontal);
+        if (enabled)
+        {
+            MoveUpdate(horizontal);
+            AnimationUpdate(horizontal);
+        }
     }
 
     private void AnimationUpdate(float horizontal)
