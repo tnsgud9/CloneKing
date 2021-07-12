@@ -24,7 +24,7 @@ public class PlayerController : Photon.PunBehaviour, IPunObservable
 
     // MoveInput Variables
     private float horizontal = 0f;
-    
+
     public Vector2 GetForwardVector2D()
     {
         if( _spriteRenderer != null && _spriteRenderer.flipX)
@@ -94,20 +94,26 @@ public class PlayerController : Photon.PunBehaviour, IPunObservable
             // PhotonNetwork.player.CustomProperties["Color"] = NetworkManager.Instance.GetPlayerColor();
         }
     }
-
-    private void BindMainCameraTarget()
-    {
-        cam = GameObject.FindWithTag("MainCamera");
-        cam.GetComponent<CamFollow>().target = this.gameObject.transform;
-    }
-
-    private void Start()
+    public void Initialize()
     {
         InitializeComponents();
         InitializeSkills();
         InitializeWidgets();
 
         _playerJump.SetPlaySounds(photonView.isMine);
+    }
+
+    public void BindMainCameraTarget()
+    {
+        cam = GameObject.FindWithTag("MainCamera");
+        cam.GetComponent<CamFollow>().target = this.gameObject.transform;
+
+        Debug.Log(this.gameObject.transform);
+    }
+
+    private void Start()
+    {
+        Initialize();
     }
 
     private void InitializeWidgets()
@@ -218,7 +224,12 @@ public class PlayerController : Photon.PunBehaviour, IPunObservable
 
     private void InitializeSkills()
     {
-        var prevSkill =GetComponent<BaseSkill>();
+        if(PhotonNetwork.offlineMode)
+        {
+            return;
+        }
+
+        var prevSkill = GetComponent<BaseSkill>();
         if (prevSkill != null )
         {
             Destroy(prevSkill);
@@ -231,8 +242,18 @@ public class PlayerController : Photon.PunBehaviour, IPunObservable
         {
             outParam = 0;
         }
-
         SkillType equipSkill = (SkillType)outParam;
+
+        // Temp Code
+        if (photonView.TryGetValueToInt("CharaType", out outParam))
+        {
+            var charaType = (CharaType)outParam;
+
+            if( charaType == CharaType.Devil)
+            {
+                equipSkill = SkillType.SelfExplosion;
+            }
+        }
         
         Type skillType = typeof(PlayerPushHand);
         switch (equipSkill)

@@ -274,7 +274,22 @@ namespace Manager
 
             Vector3 start_location = new Vector3(0, 0, 0);
 
-            PhotonNetwork.Instantiate(player_prefab_name, start_location, Quaternion.identity, 0);
+
+            if (!PhotonNetwork.offlineMode)
+            {
+                PhotonNetwork.Instantiate(player_prefab_name, start_location, Quaternion.identity, 0);
+            }
+            else
+            {
+                var go = Instantiate(Resources.Load(player_prefab_name), start_location,Quaternion.identity ) as GameObject;
+
+                // Temp Code
+                var playerController = go.GetComponent<PlayerController>();
+                playerController.enabled = true;
+                playerController.BindMainCameraTarget();
+                playerController.Initialize();
+
+            }
         }
 
         private IEnumerator DriveRanking()
@@ -340,27 +355,42 @@ namespace Manager
 
         private IEnumerator TimeCoroutine()
         {
+            timeCount = (int)playTime;
             while (true)
             {
                 object obj;
-                if (PhotonNetwork.room.CustomProperties.TryGetValue("Time", out obj))
+                if( PhotonNetwork.room == null)
+                {
+                    if( PhotonNetwork.offlineMode )
+                    {
+                        --timeCount;
+
+                        if(timeCount <= 0)
+                        {
+                            ReachGoalEvent(null);
+                        }
+                    }
+                }
+                else if (PhotonNetwork.room.CustomProperties.TryGetValue("Time", out obj))
                 {
                     double time = (double)obj;
                     double remainTime = time - PhotonNetwork.time;
-                    
+
                     timeCount = Mathf.Max(0, ((int)remainTime));
 
-                    _hour = (timeCount % (60 * 60 * 24)) / (60 * 60);
-                    _minute = (timeCount % (60 * 60)) / (60);
-                    _second = timeCount % (60);
-                    timeText.text = _hour + ":" + _minute + ":" + _second;
-
-                    if( remainTime <= 0.0d && players.Count > 0)
+                    if ( remainTime <= 0.0d && players.Count > 0)
                     {
                         players[0].RPC("RPC_FinishGame", PhotonTargets.All, true);
                         break;
                     }
                 }
+
+
+                _hour = (timeCount % (60 * 60 * 24)) / (60 * 60);
+                _minute = (timeCount % (60 * 60)) / (60);
+                _second = timeCount % (60);
+                timeText.text = _hour + ":" + _minute + ":" + _second;
+
                 yield return new WaitForSeconds(1f);
             }
         }

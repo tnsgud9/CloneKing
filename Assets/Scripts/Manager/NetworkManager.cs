@@ -12,6 +12,7 @@ public class NetworkManager : Manager.SingletonPhoton<NetworkManager>
     private string _mapName = "Map2";
 
     private int _networkIndex = 1;
+    private bool _trySinglePlay = false;
 
     public int AssignNetworkIndex()
     {
@@ -23,7 +24,10 @@ public class NetworkManager : Manager.SingletonPhoton<NetworkManager>
     {
         base.Start();
 
-        TryConnect();
+        if(!_trySinglePlay)
+        {
+            TryConnect();
+        }
 
         LobbyManager.Instance.UpdateConnectionWidgets();
     }
@@ -33,31 +37,39 @@ public class NetworkManager : Manager.SingletonPhoton<NetworkManager>
     {
         LobbyManager.Instance.UpdateConnectionWidgets();
 
-        JoinLobby();
-
-        int dummy= 0;
-
-        if( !PhotonNetwork.player.TryGetValueToInt( "Color", out dummy))
+        if (!_trySinglePlay)
         {
-            PhotonNetwork.player.CustomProperties["Color"] = PlayerColor.Black;
-        }
+            JoinLobby();
 
-        if (!PhotonNetwork.player.TryGetValueToInt("CharaType", out dummy))
-        {
-            PhotonNetwork.player.CustomProperties["CharaType"] = CharaType.VirtualGuy;
-        }
+            int dummy = 0;
 
-        if (!PhotonNetwork.player.TryGetValueToInt("SkillType", out dummy))
-        {
-            PhotonNetwork.player.CustomProperties["SkillType"] = SkillType.PushHand;
-        }
+            if (!PhotonNetwork.player.TryGetValueToInt("Color", out dummy))
+            {
+                PhotonNetwork.player.CustomProperties["Color"] = PlayerColor.Black;
+            }
 
+            if (!PhotonNetwork.player.TryGetValueToInt("CharaType", out dummy))
+            {
+                PhotonNetwork.player.CustomProperties["CharaType"] = CharaType.VirtualGuy;
+            }
+
+            if (!PhotonNetwork.player.TryGetValueToInt("SkillType", out dummy))
+            {
+                PhotonNetwork.player.CustomProperties["SkillType"] = SkillType.PushHand;
+            }
+        }
         base.OnConnectedToMaster();
     }
 
     public override void OnDisconnectedFromPhoton()
     {
         LobbyManager.Instance.UpdateConnectionWidgets();
+
+        if ( _trySinglePlay)
+        {
+            PhotonNetwork.offlineMode = true;
+            SceneManager.LoadScene("Map3");
+        }
 
         base.OnDisconnectedFromPhoton();
     }
@@ -72,6 +84,17 @@ public class NetworkManager : Manager.SingletonPhoton<NetworkManager>
         }
 
         return false;
+    }
+
+    public void PlaySingle()
+    {
+        //Temp Code
+        if( PhotonNetwork.connected)
+        {
+            PhotonNetwork.Disconnect();
+        }
+
+        _trySinglePlay = true;
     }
 
     public void JoinLobby()
