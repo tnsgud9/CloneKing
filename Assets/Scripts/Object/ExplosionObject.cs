@@ -6,6 +6,7 @@ public class ExplosionObject : MonoBehaviour
 {
     public float redColorTwinkleSpeed = 4.0f;
     public float explosionPower = 8.0f;
+    public float explosionRange = 0.75f;
 
     private SpriteRenderer _ownerSpriteRenderer;
     private TextMesh _textMesh;
@@ -80,7 +81,7 @@ public class ExplosionObject : MonoBehaviour
         Instantiate(_originExplosionEffects, transform.position, Quaternion.identity);
 
         int layerIndex = 1 << LayerMask.NameToLayer("Player");
-        foreach (var collider in Physics2D.OverlapCircleAll(transform.position, 5.0f, layerIndex))
+        foreach (var collider in Physics2D.OverlapCircleAll(transform.position, explosionRange, layerIndex))
         {
             var rigidBody = collider.gameObject.GetComponent<Rigidbody2D>();
 
