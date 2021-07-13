@@ -244,17 +244,17 @@ public class PlayerController : Photon.PunBehaviour, IPunObservable
         }
         SkillType equipSkill = (SkillType)outParam;
 
-        // Temp Code
-        if (photonView.TryGetValueToInt("CharaType", out outParam))
-        {
-            var charaType = (CharaType)outParam;
+        //// Temp Code
+        //if (photonView.TryGetValueToInt("CharaType", out outParam))
+        //{
+        //    var charaType = (CharaType)outParam;
 
-            if( charaType == CharaType.Devil)
-            {
-                equipSkill = SkillType.SelfExplosion;
-            }
-        }
-        
+        //    if( charaType == CharaType.Devil)
+        //    {
+        //        equipSkill = SkillType.SelfExplosion;
+        //    }
+        //}
+        equipSkill = SkillType.PushHand;
         Type skillType = typeof(PlayerPushHand);
         switch (equipSkill)
         {
