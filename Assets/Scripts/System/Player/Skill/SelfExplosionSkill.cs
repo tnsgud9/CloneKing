@@ -29,13 +29,15 @@ public class SelfExplosionSkill : BaseSkill
     }
 
 
-    protected override void OnStartAction()
+    protected override bool OnStartAction()
     {
         base.OnStartAction();
 
         var explosionObject = Instantiate(_originExplosionObject, transform, false).GetComponent<ExplosionObject>();
 
         explosionObject.StartExplosion(gameObject, explosionWaitForTime);
+
+        return true;
     }
 
     protected override void OnFinishDelayAction()

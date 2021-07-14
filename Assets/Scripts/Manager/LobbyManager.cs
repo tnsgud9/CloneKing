@@ -7,14 +7,30 @@ using UnityEngine.UI;
 public class LobbyManager : Manager.Singleton<LobbyManager>
 {
     public GameObject enterRoomPopupOrigin = null;
-    public InputField nickNameInputField;
 
+
+    public Dropdown skillDropDown = null;
     public Canvas mainCanvas;
     public Text messageBoxText;
     public Button joinButton;
     public Button createRoomButton;
 
     private GameObject _roomPopup = null;
+
+    public void Start()
+    {
+        if( skillDropDown != null)
+        {
+            List<Dropdown.OptionData> options = new List<Dropdown.OptionData>();
+
+            foreach (var skillValue in typeof(SkillType).GetEnumValues())
+            {
+                options.Add(new Dropdown.OptionData(((SkillType)skillValue).ToString()));
+            }
+
+            skillDropDown.AddOptions(options);
+        }
+    }
 
     public void UpdateConnectionWidgets()
     {
@@ -34,6 +50,7 @@ public class LobbyManager : Manager.Singleton<LobbyManager>
         messageBoxText.text = connection_msg;
         joinButton.interactable = button_enable;
         createRoomButton.interactable = button_enable;
+        skillDropDown.enabled = button_enable;
 
         // Bind UI Event 
         joinButton.onClick.RemoveAllListeners();
@@ -54,22 +71,25 @@ public class LobbyManager : Manager.Singleton<LobbyManager>
     }
 
     private void OnClickedJoinButton()
-    {
-        NetworkManager.Instance.SetupNickName(nickNameInputField.text);
-
+    {        
         ShowEnterRoomPopup(false);
     }
 
     private void OnClickedCreateRoomButton()
     {
-        NetworkManager.Instance.SetupNickName(nickNameInputField.text);
-
-        ShowEnterRoomPopup( true );
-
+        ShowEnterRoomPopup(true);
     }
 
     private void ShowEnterRoomPopup( bool is_create_room)
     {
+        if (skillDropDown != null)
+        {
+            string text = skillDropDown.options[skillDropDown.value].text;
+            SkillType type =(SkillType)System.Enum.Parse(typeof(SkillType), text);
+
+            PhotonNetwork.player.CustomProperties["SkillType"] = type;
+        }
+
         if (_roomPopup == null)
         {
             _roomPopup = Instantiate(enterRoomPopupOrigin);

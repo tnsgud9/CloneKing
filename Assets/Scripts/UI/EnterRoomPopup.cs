@@ -7,6 +7,7 @@ public class EnterRoomPopup : MonoBehaviour
 {
     public bool isCreateRoom = true;
 
+    public InputField nickNameInputField = null;
     public InputField roomNameInputField = null;
     public Dropdown mapDropDown = null;
     public Text mainText = null;
@@ -40,6 +41,8 @@ public class EnterRoomPopup : MonoBehaviour
 
     public void OnSubmitButton()
     {
+        NetworkManager.Instance.SetupNickName(nickNameInputField.text);
+
         Debug.Log(mapDropDown.itemText.text);
         if( isCreateRoom )
         {

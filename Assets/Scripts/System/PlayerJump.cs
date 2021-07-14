@@ -77,6 +77,18 @@ public class PlayerJump : MonoBehaviour
         _playSounds = playSounds;
     }
 
+    public bool DoubleJump()
+    {
+        if( _currentState == JumpState.Jump)
+        {
+            _pressTime = _maxTime * 0.3f;
+            Jump();
+
+            return true;
+        }
+
+        return false;
+    }
 
     //JumpEvent는 PlayerController에서 호출됨.
     public bool JumpEvent( JumpState state )

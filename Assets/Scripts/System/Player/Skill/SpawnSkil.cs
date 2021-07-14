@@ -7,7 +7,8 @@ public class SpawnSkill : BaseSkill
     // Start is called before the first frame update
     void Start()
     {
-        
+        coolTime = 10.0f;
+        delayTime = 0.0f;
     }
 
     // Update is called once per frame
@@ -26,16 +27,30 @@ public class SpawnSkill : BaseSkill
         base.OnFinishDelayAction();
     }
 
-    protected override void OnStartAction()
+    protected override bool OnStartAction()
     {
         base.OnStartAction();
 
-        if( _playerController !=null )
+        if( _playerController != null )
         {
             Vector3 spawnPosition = transform.position;
             spawnPosition += _playerController.GetForwardVector2D().ConvertToVector3D() * 0.25f;
 
-            _playerController.photonView.RPC("RPC_SpawnObject", PhotonTargets.All, "Prefabs/Object/Tower", PhotonNetwork.time, spawnPosition);
+            spawnPosition.y = -5.0f;
+
+            if (_playerController.photonView.isMine)
+            {
+                GameObject go = PhotonNetwork.Instantiate("Prefabs/Object/Tower", spawnPosition, Quaternion.identity, 0);
+
+                if (go != null)
+                {
+                    go.GetComponent<SynchronizedObject>().SetupObject(_playerController, PhotonNetwork.time);
+                }
+            }
+
+            return true;
         }
+
+        return false;
     }
 }

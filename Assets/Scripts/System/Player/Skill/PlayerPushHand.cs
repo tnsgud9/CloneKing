@@ -30,7 +30,6 @@ public class PlayerPushHand : BaseSkill
         string pushHandPath = "Prefabs/Player/Stop Hand";
         string playerPushPath = "Sprites/Characters/VirtualGuy/Stop";
 
-
         int charaType;
         if (_playerController != null && _playerController.photonView.TryGetValueToInt("CharaType", out charaType))
         {
@@ -62,7 +61,7 @@ public class PlayerPushHand : BaseSkill
         _playerMove = GetComponent<PlayerMove>();
     }
 
-    protected override void OnStartAction()
+    protected override bool OnStartAction()
     {
         base.OnStartAction();
 
@@ -73,6 +72,8 @@ public class PlayerPushHand : BaseSkill
         _spriteRenderer.sprite = playerPushSprite;
 
         InstantiatePushHand();
+
+        return true;
     }
 
     protected override void OnFinishDelayAction()

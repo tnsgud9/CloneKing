@@ -102,7 +102,10 @@ namespace Manager
         [SerializeField] private List<PhotonView> players;
         [SerializeField] private Text timeText;
         private float playTime = 1800.0f;
+        private bool _isFinishedGame = false;
+
         private Canvas _canvas;
+
 
         public GameObject princessCage = null;
         public GameObject currentPopup = null;
@@ -204,11 +207,32 @@ namespace Manager
             }
         }
 
-        public void ReachGoalEvent(GameObject player)
+        public void ReachGoalEvent(GameObject player, bool isTimeOut)
         {
-            StopCoroutine(_gameTimer);
-            StartCoroutine(DriveVictoryEvent());
-            StartCoroutine(waitThenCallback(5.0f, () => { CreateRankingPopup(); }));
+            if (!_isFinishedGame)
+            {
+                _isFinishedGame = true;
+
+                // Sounds
+                string soundPath = "Sounds/GameClear";
+                if (isTimeOut)
+                {
+                    soundPath = "Sounds/TimeOut";
+                }
+                GameObject go = new GameObject();
+                go.transform.position = player.transform.position;
+
+                var audioSource = go.AddComponent<AudioSource>();
+
+                audioSource.clip  = Resources.Load(soundPath) as AudioClip;
+                audioSource.loop = true;
+                audioSource.volume = 0.15f;
+                audioSource.Play();
+
+                StopCoroutine(_gameTimer);
+                StartCoroutine(DriveVictoryEvent());
+                StartCoroutine(waitThenCallback(5.0f, () => { CreateRankingPopup(); }));
+            }
 
             foreach (PhotonView photonView in players)
             {
@@ -310,7 +334,7 @@ namespace Manager
             const float delayTime= 2.0f;
             const float disappearSpeed = 0.15f;
 
-            const string resourcesName ="Prefabs/Effects/Fireworks";
+            const string fireworksResourcesPath ="Prefabs/Effects/Fireworks";
 
             float elapsedTime = 0.0f;
 
@@ -335,7 +359,7 @@ namespace Manager
                     Vector3 viewportRandomPosition = new Vector3(UnityEngine.Random.Range(0.0f, 1.0f), UnityEngine.Random.Range(0.0f, 1.0f), 0.0f);
                     Vector3 spawnPosition = Camera.main.ViewportToWorldPoint(viewportRandomPosition);
 
-                    Instantiate(Resources.Load(resourcesName), spawnPosition, new Quaternion());
+                    Instantiate(Resources.Load(fireworksResourcesPath), spawnPosition, new Quaternion());
                 }
 
                 // DriveCage
@@ -367,7 +391,7 @@ namespace Manager
 
                         if(timeCount <= 0)
                         {
-                            ReachGoalEvent(null);
+                            ReachGoalEvent(null, true);
                         }
                     }
                 }

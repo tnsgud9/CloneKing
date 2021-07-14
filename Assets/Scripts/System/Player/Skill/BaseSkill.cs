@@ -7,15 +7,11 @@ public class BaseSkill : MonoBehaviour
 {
     private bool _isActivated = true;
 
-
     public GameObject gauge;
     private Animation _gagueAnimation;
     protected PlayerController _playerController;
 
-    [SerializeField]
     protected float coolTime = 1.0f;
-
-    [SerializeField]
     protected float delayTime = 1.0f;
 
     // Start is called before the first frame update
@@ -50,9 +46,9 @@ public class BaseSkill : MonoBehaviour
 
     }
 
-    protected virtual void OnStartAction()
+    protected virtual bool OnStartAction()
     {
-
+        return false;
     }
 
     protected virtual void OnFinishDelayAction()
@@ -60,30 +56,30 @@ public class BaseSkill : MonoBehaviour
 
     }
 
-
     public virtual void DoSkill()
     {
         if (_isActivated)
         {
-            _isActivated = false;
-
-            gauge.SetActive(true);
-            _gagueAnimation["gauge_refill"].speed = (10.0f / coolTime);
-            _gagueAnimation.Play();
-
-            OnStartAction();
-
-            StartCoroutine(WaitThenCallBack(delayTime, () =>
+            if (OnStartAction())
             {
-                OnFinishDelayAction();
-            }));
+                _isActivated = false;
 
-            StartCoroutine(WaitThenCallBack(coolTime, () =>
-            {
-                _isActivated = true;
-                gauge.SetActive(false);
-                OnActivation();
-            }));
+                gauge.SetActive(true);
+                _gagueAnimation["gauge_refill"].speed = (10.0f / coolTime);
+                _gagueAnimation.Play();
+
+                StartCoroutine(WaitThenCallBack(delayTime, () =>
+                {
+                    OnFinishDelayAction();
+                }));
+
+                StartCoroutine(WaitThenCallBack(coolTime, () =>
+                {
+                    _isActivated = true;
+                    gauge.SetActive(false);
+                    OnActivation();
+                }));
+            }
         }
     }
 

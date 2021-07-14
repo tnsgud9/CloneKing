@@ -23,7 +23,10 @@ public enum SkillType
 {
     PushHand,
     SelfExplosion,
-    SpawnGrowingTower
+    SpawnVine,
+    DoubleJump,
+    Teleport,
+    Shield,
 }
 
 public static class ExtensionMethod

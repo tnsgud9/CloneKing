@@ -107,8 +107,6 @@ public class PlayerController : Photon.PunBehaviour, IPunObservable
     {
         cam = GameObject.FindWithTag("MainCamera");
         cam.GetComponent<CamFollow>().target = this.gameObject.transform;
-
-        Debug.Log(this.gameObject.transform);
     }
 
     private void Start()
@@ -171,7 +169,7 @@ public class PlayerController : Photon.PunBehaviour, IPunObservable
     [PunRPC]
     void RPC_FinishGame( bool _is_victory )
     {
-        Manager.GameManager.Instance.ReachGoalEvent(this.gameObject);
+        Manager.GameManager.Instance.ReachGoalEvent(this.gameObject, !_is_victory);
 
         if( _is_victory)
         {
@@ -188,7 +186,7 @@ public class PlayerController : Photon.PunBehaviour, IPunObservable
 
         if (SpawnObject != null)
         {
-            SpawnObject.GetComponent<SynchronizedObject>().SetupObject(spawnTime);
+            SpawnObject.GetComponent<SynchronizedObject>().SetupObject(this, spawnTime);
             SpawnObject.transform.position = position;
         }
     }
@@ -244,17 +242,6 @@ public class PlayerController : Photon.PunBehaviour, IPunObservable
         }
         SkillType equipSkill = (SkillType)outParam;
 
-        // Temp Code
-        if (photonView.TryGetValueToInt("CharaType", out outParam))
-        {
-            var charaType = (CharaType)outParam;
-
-            if( charaType == CharaType.Devil)
-            {
-                equipSkill = SkillType.SelfExplosion;
-            }
-        }
-
         Type skillType = typeof(PlayerPushHand);
         switch (equipSkill)
         {
@@ -266,8 +253,16 @@ public class PlayerController : Photon.PunBehaviour, IPunObservable
                 skillType = typeof(SelfExplosionSkill);
                 break;
 
-            case SkillType.SpawnGrowingTower:
+            case SkillType.SpawnVine:
                 skillType = typeof(SpawnSkill);
+                break;
+
+            case SkillType.DoubleJump:
+                skillType = typeof(DoubleJumpSkill);
+                break;
+
+            case SkillType.Teleport:
+                skillType = typeof(TeleportSkill);
                 break;
 
         }
@@ -340,9 +335,16 @@ public class PlayerController : Photon.PunBehaviour, IPunObservable
     {
         if(other.CompareTag("Goal"))
         {
-            photonView.RPC("RPC_FinishGame", PhotonTargets.All, true);
+            if( PhotonNetwork.offlineMode)
+            {
+                Manager.GameManager.Instance.ReachGoalEvent(this.gameObject,false);
+            }
+            else
+            {
+                photonView.RPC("RPC_FinishGame", PhotonTargets.All, true);
+            }
         }
-        //Manager.GameManager.Instance.ReachGoalEvent(this.gameObject);
+        
     }
 
     private IEnumerator waitThenCallback(float time, Action callback)

@@ -14,7 +14,8 @@ public class RankingPopup : MonoBehaviour
     {
         var parent_transform = ScrollRect.content.transform;
 
-        foreach ( var player in Manager.GameManager.Instance.GetPlayers())
+
+        foreach (var player in Manager.GameManager.Instance.GetPlayers())
         {
             GameObject go = Instantiate(Resources.Load(_rankingItemPath) as GameObject);
             go.transform.SetParent(parent_transform, false);
@@ -26,7 +27,6 @@ public class RankingPopup : MonoBehaviour
                 rankingItem.SetupPlayer(player.owner);
             }
         }
-
     }
 
     public void OnClickExit()

@@ -1,20 +1,31 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Photon;
 
-public class SynchronizedObject : Photon.PunBehaviour
+public class SynchronizedObject : Photon.PunBehaviour, IPunObservable
 {
     public float lifeTime = 15.0f;
 
     private double _destroyTime = 0.0f;
 
-    public void SetupObject(double spawnTime )
+    protected PlayerController _owner = null;
+
+    public void SetupObject(PlayerController controller, double spawnTime )
     {
         _destroyTime = spawnTime + lifeTime;
+        _owner = controller;
     }
 
+    public override void OnPhotonInstantiate(PhotonMessageInfo info)
+    {
+        base.OnPhotonInstantiate(info);
 
+        info.sender.TagObject = this.gameObject;
+    }
+
+    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+    {
+    }
     // Start is called before the first frame update
     void Start()
     {
@@ -22,11 +33,14 @@ public class SynchronizedObject : Photon.PunBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    protected virtual void Update()
     {
-        if( PhotonNetwork.time >= _destroyTime )
+        if (photonView.isMine)
         {
-            Destroy(this.gameObject);
+            if (PhotonNetwork.time >= _destroyTime)
+            {
+                PhotonNetwork.Destroy(gameObject);
+            }
         }
     }
 }
