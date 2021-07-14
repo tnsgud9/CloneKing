@@ -13,7 +13,7 @@ public class TeleportSkill : BaseSkill
     public void Start()
     {
         delayTime = 5.0f;
-        coolTime = 5.0f;
+        coolTime = 20.0f;
     }
 
     public override void BindPlayerController(PlayerController playerController)

@@ -123,10 +123,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d723723ca9a82874fb818799dcce5db9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  startCountY: 0
-  destCountY: 350
-  growTime: 6
   lifeTime: 10
+  startCountY: 0
+  destCountY: 250
+  growTime: 4
 --- !u!114 &1841760078816463375
 MonoBehaviour:
   m_ObjectHideFlags: 0

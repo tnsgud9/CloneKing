@@ -231,7 +231,7 @@ namespace Manager
 
                 StopCoroutine(_gameTimer);
                 StartCoroutine(DriveVictoryEvent());
-                StartCoroutine(waitThenCallback(5.0f, () => { CreateRankingPopup(); }));
+                StartCoroutine(waitThenCallback(1.0f, () => { CreateRankingPopup(); }));
             }
 
             foreach (PhotonView photonView in players)

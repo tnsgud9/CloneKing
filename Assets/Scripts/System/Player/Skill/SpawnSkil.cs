@@ -7,7 +7,7 @@ public class SpawnSkill : BaseSkill
     // Start is called before the first frame update
     void Start()
     {
-        coolTime = 10.0f;
+        coolTime = 20.0f;
         delayTime = 0.0f;
     }
 
@@ -34,7 +34,7 @@ public class SpawnSkill : BaseSkill
         if( _playerController != null )
         {
             Vector3 spawnPosition = transform.position;
-            spawnPosition += _playerController.GetForwardVector2D().ConvertToVector3D() * 0.25f;
+            spawnPosition += _playerController.GetForwardVector2D().ConvertToVector3D() * 0.05f;
 
             spawnPosition.y = -5.0f;
 
