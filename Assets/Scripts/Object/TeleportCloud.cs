@@ -5,7 +5,7 @@ using UnityEngine.Tilemaps;
 
 public class TeleportCloud : SynchronizedObject
 {
-    private const float moveSpeed = 3.0f;
+    private const float moveSpeed = 4.0f;
 
     private float _remainLifeTime = 1.5f;
 
@@ -107,8 +107,8 @@ public class TeleportCloud : SynchronizedObject
 
     private void SerachingProperPosition()
     {
-        const float heightIncreasement = 5.0f;
-        const float measureUnit = 0.15f;
+        const float heightIncreasement = 4.0f;
+        const float measureUnit = 0.1f;
 
         _searchingPosition = Vector3.zero;
         Vector2 serachingCenterPosition = new Vector2(0.0f, transform.position.y + heightIncreasement);
@@ -133,19 +133,21 @@ public class TeleportCloud : SynchronizedObject
         Vector3 moveDirection = position - transform.position;
         moveDirection.Normalize();
 
-        _moveVelocity += moveDirection * moveSpeed * Time.deltaTime;
+        _moveVelocity += moveDirection * moveSpeed * Time.deltaTime * 2.0f;
 
         if( _moveVelocity.sqrMagnitude > moveSpeed)
         {
-            _moveVelocity = (_moveVelocity + moveDirection).normalized * moveSpeed;
+            _moveVelocity = (_moveVelocity + moveDirection * 0.1f).normalized * moveSpeed;
         }
 
-        transform.position += _moveVelocity * Time.deltaTime;
 
         if( (position - transform.position).sqrMagnitude.NearlyEquals( 0.0f, 0.01f))
         {
-            _moveVelocity = Vector3.zero;
             return true;
+        }
+        else
+        {
+            transform.position += _moveVelocity * Time.deltaTime;
         }
 
         return false;

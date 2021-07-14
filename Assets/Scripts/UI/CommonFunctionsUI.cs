@@ -1,33 +1,71 @@
 using System.Collections;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
 public class CommonFunctionsUI : MonoBehaviour
 {
+    public bool AlphaAppear = false;
     public bool ExpandAppear = true;
+    public bool TranslateAppear = false;
 
+    public Vector3 startPoisition = Vector3.zero;
+    public Vector3 endPosition = Vector3.one;
+        
+    public float AppearTime = 1.0f;
+    public float AppearDelay = 0.0f;
+
+    private Image _image = null;
     public void Start()
     {
         if( ExpandAppear)
         {
-            StartCoroutine(DriveAppear());
+            gameObject.transform.localScale = Vector3.zero;
+
+            StartCoroutine(DriveTimer(AppearDelay, AppearTime, EasingFunction.Ease.EaseOutExpo,
+            (float factor) => { gameObject.transform.localScale = Vector3.Lerp(Vector3.zero, Vector3.one, factor); } ));
+        }
+
+        if(AlphaAppear)
+        {
+            _image = GetComponent<Image>();
+            _image.color = new Color(1.0f, 1.0f, 1.0f, 0.0f);
+
+            StartCoroutine(DriveTimer(AppearDelay, AppearTime, EasingFunction.Ease.EaseOutExpo,
+            (float factor) => { _image.color = new Color(1.0f, 1.0f, 1.0f, Mathf.Lerp(0.0f, 1.0f, factor)); } ));
+        }
+
+        if(TranslateAppear)
+        {
+            StartCoroutine(DriveTimer(AppearDelay, AppearTime, EasingFunction.Ease.EaseInOutElastic,
+            (float factor) => { gameObject.transform.localPosition = Vector3.Lerp(startPoisition, endPosition, factor); }));
         }
     }
 
-    IEnumerator DriveAppear()
+    IEnumerator DriveTimer( float delayTime, float time, EasingFunction.Ease easingType, Action<float> callBack)
     {
-        float time = 0.0f;
-
-        while( time < 1.0f)
+        if (delayTime > 0.0f)
         {
-            time += Time.deltaTime;
+            yield return new WaitForSeconds(delayTime);
+        }
 
-            gameObject.transform.localScale = Vector3.Lerp(Vector3.zero, Vector3.one, EasingFunction.EaseOutExpo(0.0f, 1.0f, Mathf.Clamp01(time)));
+        float elapsedTime = 0.0f;
+
+        while (elapsedTime < time)
+        {
+            elapsedTime += Time.deltaTime;
+
+            float factor = EasingFunction.GetEasingFunction(easingType).Invoke(0.0f, 1.0f, Mathf.Clamp01(elapsedTime / time));
+
+            if (callBack != null)
+            {
+                callBack.Invoke(factor);
+            }
 
             yield return new WaitForEndOfFrame();
         }
-
     }
 
     public void ChangeScene( string name)

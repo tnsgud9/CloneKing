@@ -201,7 +201,7 @@ public class PlayerController : Photon.PunBehaviour, IPunObservable
     }
 
     [PunRPC]
-    void RPC_Emote(EmotionType emotionType)
+    public void RPC_Emote(EmotionType emotionType)
     {
         const string emotion_name = "Prefabs/Player/Emotion";
         Vector3 additional_spawn_position = new Vector3(0, 0.35f, 0);
@@ -314,11 +314,6 @@ public class PlayerController : Photon.PunBehaviour, IPunObservable
                 photonView.RPC("RPC_DoSkill", PhotonTargets.All);
             }
         }
-
-        //if (Input.GetKeyDown(KeyCode.R))
-        //{
-        //    photonView.RPC("RPC_SpawnObject", PhotonTargets.All,"Prefabs/Object/Wall", PhotonNetwork.time + 15.0d, transform.position + Vector3.down * 0.35f);
-        //}
     }
 
     private void EmotionInput()

@@ -30,21 +30,32 @@ public class PlayerPushHand : BaseSkill
         string pushHandPath = "Prefabs/Player/Stop Hand";
         string playerPushPath = "Sprites/Characters/VirtualGuy/Stop";
 
-        int charaType;
-        if (_playerController != null && _playerController.photonView.TryGetValueToInt("CharaType", out charaType))
-        {
-            switch ((CharaType)charaType)
-            {
-                case CharaType.Prince:
-                    playerPushPath = "Sprites/Characters/Prince/Stop";
-                    pushHandPath = "Prefabs/Player/Stop Hand - Shield";
-                    break;
+        int charaType= 0;
 
-                case CharaType.Devil:
-                    playerPushPath = "Sprites/Characters/Prince2/Stop";
-                    pushHandPath = "Prefabs/Player/Stop Hand - Shield";
-                    break;
+        if( PhotonNetwork.offlineMode)
+        {
+            PhotonNetwork.player.TryGetValueToInt("CharaType", out charaType);
+        }
+        else
+        {
+            if (_playerController != null )
+            {
+                _playerController.photonView.TryGetValueToInt("CharaType", out charaType);
             }
+        }
+
+        
+        switch ((CharaType)charaType)
+        {
+            case CharaType.Prince:
+                playerPushPath = "Sprites/Characters/Prince/Stop";
+                pushHandPath = "Prefabs/Player/Stop Hand - Shield";
+                break;
+
+            case CharaType.Devil:
+                playerPushPath = "Sprites/Characters/Prince2/Stop";
+                pushHandPath = "Prefabs/Player/Stop Hand - Shield";
+                break;
         }
 
         pushHand = Resources.Load( pushHandPath) as GameObject;

@@ -4,14 +4,13 @@ using UnityEngine;
 
 public class SelfExplosionSkill : BaseSkill
 {
-    public float explosionWaitForTime = 5.0f;
-
+    public float explosionWaitForTime = 3.0f;
     private GameObject _originExplosionObject;
 
     // Start is called before the first frame update
     void Start()
     {
-        coolTime = 10.0f;
+        coolTime = 13.0f;
         delayTime = 0.0f;
 
         LoadResources();

@@ -17,7 +17,7 @@ public class PlayerRankingItem : MonoBehaviour
         if( player == null)
         {
             RankText.text = "1";
-            NameText.text = "¿Ã∏ß";
+            NameText.text = "Player";
         }
     }
 

@@ -21,7 +21,16 @@ public class PlayerEmotionControl : MonoBehaviour
         if( IsExpiredCoolTime())
         {
             _canActive = false;
-            playerController.photonView.RPC("RPC_Emote", PhotonTargets.All, emotionType);
+
+            if( PhotonNetwork.offlineMode)
+            {
+                playerController.RPC_Emote(EmotionType.ThumbsUp);
+            }
+            else
+            {
+                playerController.photonView.RPC("RPC_Emote", PhotonTargets.All, emotionType);
+            }
+
             StartCoroutine(CoolTimeCoroutine());
 
         }

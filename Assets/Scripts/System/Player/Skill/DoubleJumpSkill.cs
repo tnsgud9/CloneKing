@@ -8,6 +8,7 @@ public class DoubleJumpSkill : BaseSkill
 
     public void Start()
     {
+        coolTime = 10.0f;
     }
 
     public override void BindPlayerController(PlayerController playerController)
