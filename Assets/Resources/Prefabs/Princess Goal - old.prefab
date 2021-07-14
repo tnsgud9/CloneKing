@@ -167,7 +167,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4900635457897163402}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -0.06, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 4900635455886168677}
@@ -213,7 +213,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 1
-  m_Sprite: {fileID: 21300000, guid: 429e60281fa5bc24f9bd2284442629f0, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 6848319cda23c6141a3c9ec31a7abdcd, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -237,16 +237,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sprites:
-  - {fileID: 21300000, guid: 429e60281fa5bc24f9bd2284442629f0, type: 3}
-  - {fileID: 21300000, guid: 29d2e3166c130eb44b0e0136e996c89e, type: 3}
-  - {fileID: 21300000, guid: bfc9829d36019804fa290d99f13264c6, type: 3}
-  - {fileID: 21300000, guid: afc1cd5cc93124845bd61a0f905c8e7d, type: 3}
-  - {fileID: 21300000, guid: 8488378cb4372d94bb5ddea6c1368955, type: 3}
-  - {fileID: 21300000, guid: 9ffbd3756b9fdc647a60df66bc586b7e, type: 3}
-  - {fileID: 21300000, guid: 12f8b4ddeb4f17d47aa853362962d6ef, type: 3}
-  - {fileID: 21300000, guid: cfd981ffc8faadd49802d49c95f3d058, type: 3}
-  - {fileID: 21300000, guid: 741c05abd3753224687992453bbde833, type: 3}
-  - {fileID: 21300000, guid: bbbc53a2dc7f6b14fb42fe6b187909f8, type: 3}
-  - {fileID: 21300000, guid: 1dccabe676e91044ba3229d0f85633ba, type: 3}
-  - {fileID: 21300000, guid: 7249960d8d09eb84ea75f4ef6b506c51, type: 3}
+  - {fileID: 21300000, guid: 6848319cda23c6141a3c9ec31a7abdcd, type: 3}
+  - {fileID: 21300000, guid: c584e7d32c93e5d44ae6002566d2d898, type: 3}
+  - {fileID: 21300000, guid: d6ca451d6b72ebf4084499ef2467a77b, type: 3}
+  - {fileID: 21300000, guid: 80bc5a5df3dc39847bda2d94075dae2b, type: 3}
+  - {fileID: 21300000, guid: 3ef00b2104513484d94e07921b2b3b95, type: 3}
+  - {fileID: 21300000, guid: 5309990010bb5f645b80b760ea80fda4, type: 3}
   changeTime: 0.15
