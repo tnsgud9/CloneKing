@@ -126,6 +126,7 @@ namespace Manager
             player = Resources.Load("Prefabs/PlayerChara") as GameObject;
 
             InitializeComponents();
+            InitializePhysicsColision();
             _gameTimer = TimeCoroutine();
             StartCoroutine(_gameTimer);
 
@@ -141,7 +142,14 @@ namespace Manager
             _canvas = FindObjectOfType<Canvas>();
             timeText = GameObject.Find("timer text").GetComponent<Text>();
             timeText.gameObject.SetActive(true);
+        }
 
+        private void InitializePhysicsColision()
+        {
+            int objectLayerIndex = LayerMask.NameToLayer("Object");
+            int playerShieldLayerIndex = LayerMask.NameToLayer("PlayerShield");
+
+            Physics2D.IgnoreLayerCollision(objectLayerIndex, playerShieldLayerIndex);
         }
 
         private void Update()
@@ -229,7 +237,10 @@ namespace Manager
                 audioSource.volume = 0.15f;
                 audioSource.Play();
 
-                StopCoroutine(_gameTimer);
+                if (_gameTimer != null)
+                {
+                    StopCoroutine(_gameTimer);
+                }
                 StartCoroutine(DriveVictoryEvent());
                 StartCoroutine(waitThenCallback(1.0f, () => { CreateRankingPopup(); }));
             }

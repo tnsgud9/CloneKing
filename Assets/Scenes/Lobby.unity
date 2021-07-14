@@ -885,12 +885,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   AlphaAppear: 0
-  ExpandAppear: 1
+  ExpandAppear: 0
   TranslateAppear: 1
-  startPoisition: {x: 0, y: 600, z: 0}
+  startPoisition: {x: 0, y: 500, z: 0}
   endPosition: {x: 0, y: 390, z: 0}
   AppearTime: 1
-  AppearDelay: 0
+  AppearDelay: 0.5
 --- !u!1 &483633724
 GameObject:
   m_ObjectHideFlags: 0

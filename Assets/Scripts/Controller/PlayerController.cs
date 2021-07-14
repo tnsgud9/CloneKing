@@ -265,6 +265,10 @@ public class PlayerController : Photon.PunBehaviour, IPunObservable
                 skillType = typeof(TeleportSkill);
                 break;
 
+            case SkillType.Shield:
+                skillType = typeof(ShieldSkill);
+                break;
+
         }
 
         var baseSkill = gameObject.AddComponent(skillType) as BaseSkill;

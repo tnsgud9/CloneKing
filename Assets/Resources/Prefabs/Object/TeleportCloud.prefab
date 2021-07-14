@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 6681004461156353494}
   - component: {fileID: 7681755527641606380}
   - component: {fileID: 7392868115321979494}
-  m_Layer: 7
+  m_Layer: 11
   m_Name: TeleportCloud
   m_TagString: Untagged
   m_Icon: {fileID: 0}

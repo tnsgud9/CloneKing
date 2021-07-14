@@ -137,17 +137,22 @@ public class TeleportCloud : SynchronizedObject
 
         if( _moveVelocity.sqrMagnitude > moveSpeed)
         {
-            _moveVelocity = (_moveVelocity + moveDirection * 0.1f).normalized * moveSpeed;
+            _moveVelocity = Vector3.Lerp(_moveVelocity, moveDirection * moveSpeed, Mathf.Clamp01( moveSpeed * Time.deltaTime));
         }
 
-
-        if( (position - transform.position).sqrMagnitude.NearlyEquals( 0.0f, 0.01f))
+        float distance = (position - transform.position).sqrMagnitude;
+        if (distance.NearlyEquals( 0.0f, 3.0f))
         {
-            return true;
+            transform.position = Vector3.Lerp(transform.position, position, Time.deltaTime * moveSpeed);
+
+            if (distance.NearlyEquals(0.0f, 0.01f))
+            {
+                return true;
+            }
         }
         else
         {
-            transform.position += _moveVelocity * Time.deltaTime;
+            transform.position += _moveVelocity * Mathf.Clamp( Time.deltaTime,0.0f, 0.2f);
         }
 
         return false;
@@ -156,7 +161,8 @@ public class TeleportCloud : SynchronizedObject
     private void DriveDestory()
     {
         _remainLifeTime -= Time.deltaTime;
-        if( _remainLifeTime <=0.0f)
+
+        if( _remainLifeTime <= 0.0f)
         {
             PhotonNetwork.Destroy(gameObject);
         }

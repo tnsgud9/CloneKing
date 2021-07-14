@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 7128717004812767088}
   - component: {fileID: 5848072115986059535}
   - component: {fileID: 1841760078816463375}
-  m_Layer: 7
+  m_Layer: 11
   m_Name: Tower
   m_TagString: TileMap
   m_Icon: {fileID: 0}

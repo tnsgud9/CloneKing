@@ -20,7 +20,7 @@ public class CommonFunctionsUI : MonoBehaviour
     private Image _image = null;
     public void Start()
     {
-        if( ExpandAppear)
+        if(ExpandAppear)
         {
             gameObject.transform.localScale = Vector3.zero;
 
@@ -39,6 +39,8 @@ public class CommonFunctionsUI : MonoBehaviour
 
         if(TranslateAppear)
         {
+            gameObject.transform.localPosition= startPoisition;
+
             StartCoroutine(DriveTimer(AppearDelay, AppearTime, EasingFunction.Ease.EaseInOutElastic,
             (float factor) => { gameObject.transform.localPosition = Vector3.Lerp(startPoisition, endPosition, factor); }));
         }
