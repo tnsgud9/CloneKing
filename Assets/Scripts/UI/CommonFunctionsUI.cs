@@ -10,6 +10,7 @@ public class CommonFunctionsUI : MonoBehaviour
     public bool AlphaAppear = false;
     public bool ExpandAppear = true;
     public bool TranslateAppear = false;
+    public bool UVScrolling = false;
 
     public Vector3 startPoisition = Vector3.zero;
     public Vector3 endPosition = Vector3.one;
@@ -18,9 +19,27 @@ public class CommonFunctionsUI : MonoBehaviour
     public float AppearDelay = 0.0f;
 
     private Image _image = null;
+
+    public void Update()
+    {
+        if( UVScrolling)
+        {
+            var mat = GetComponent<Image>().material;
+
+            var offset =mat.mainTextureOffset;
+
+            offset.x = 0.0f;
+            offset.y += Time.deltaTime * 0.01f;
+
+            mat.mainTextureOffset = offset;
+        }
+    }
+
     public void Start()
     {
-        if(ExpandAppear)
+
+
+        if (ExpandAppear)
         {
             gameObject.transform.localScale = Vector3.zero;
 
