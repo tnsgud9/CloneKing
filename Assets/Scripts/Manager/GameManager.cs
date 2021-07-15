@@ -181,7 +181,7 @@ namespace Manager
             {
                 var player = players[i];
 
-                if( player !=null)
+                if( player == null)
                 {
                     players.RemoveAt(i);
                 }
