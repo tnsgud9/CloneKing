@@ -57,8 +57,9 @@ public class Indicator : MonoBehaviour
 
             _spriteRenderer.enabled = isVisible;
             _nickNameViewer.enabled = isVisible;
+            _nickNameViewer.gameObject.SetActive(isVisible);
 
-            if( isVisible)
+            if ( isVisible)
             {
                 bool isFixedBottomPosition = viewportPosition.y >= 1.0f;
 

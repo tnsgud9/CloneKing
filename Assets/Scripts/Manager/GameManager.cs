@@ -177,23 +177,42 @@ namespace Manager
         {
             const float tolerance = 0.3f;
 
-            players.Sort((lhs, rhs) => { return -lhs.gameObject.transform.position.y.CompareTo(rhs.gameObject.transform.position.y); });
+            for( int i =0; i < players.Count;)
+            {
+                var player = players[i];
+
+                if( player !=null)
+                {
+                    players.RemoveAt(i);
+                }
+                else
+                {
+                    ++i;
+                }
+            }
+
+            players.Sort((lhs, rhs) => {
+                if (lhs == null || rhs == null)
+                    return -1;
+
+                return -lhs.gameObject.transform.position.y.CompareTo(rhs.gameObject.transform.position.y);
+            });
 
             int rank = 1;
 
             PhotonView prevPlayer = null;
             int prevPlayerRank = 1;
 
+            Debug.Log(players.Count);
             foreach (var player in players)
             {
                 int currentRank = rank++;
-                var photonView = player;
 
-                if (photonView != null && photonView.isMine)
+                if (player != null && player.isMine)
                 {
                     int prevRank = -1;
 
-                    photonView.TryGetValueToInt("Rank", out prevRank);
+                    player.TryGetValueToInt("Rank", out prevRank);
 
                     if (prevPlayer != null)
                     {
@@ -208,8 +227,8 @@ namespace Manager
 
                     if (currentRank != prevRank)
                     {
-                        photonView.owner.CustomProperties["Rank"] = currentRank;
-                        photonView.owner.SetCustomProperties(photonView.owner.CustomProperties);
+                        player.owner.CustomProperties["Rank"] = currentRank;
+                        player.owner.SetCustomProperties(player.owner.CustomProperties);
                     }
                 }
             }

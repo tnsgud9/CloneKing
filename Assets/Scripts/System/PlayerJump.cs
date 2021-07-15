@@ -79,7 +79,8 @@ public class PlayerJump : MonoBehaviour
 
     public bool DoubleJump()
     {
-        if( _currentState == JumpState.Jump)
+        if( _currentState == JumpState.Jump ||
+            _currentState == JumpState.Falling)
         {
             _pressTime = _maxTime * 0.3f;
             Jump();
