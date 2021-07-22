@@ -22,7 +22,15 @@ public class ImageAnimation : MonoBehaviour
 
     void ChangeSprites()
     {
-        _image.sprite = sprites[spriteCount];
-        spriteCount = (spriteCount + 1) % spriteLength;
+        if (this.enabled)
+        {
+            _image.sprite = sprites[spriteCount];
+            spriteCount = (spriteCount + 1) % spriteLength;
+        }
+    }
+
+    public Sprite GetFirstSprite()
+    {
+        return sprites[0];
     }
 }

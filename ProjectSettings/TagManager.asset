@@ -18,8 +18,8 @@ TagManager:
   - TileMap
   - Player
   - Hand
-  - 
-  - 
+  - PlayerShield
+  - Object
   - 
   - 
   - 

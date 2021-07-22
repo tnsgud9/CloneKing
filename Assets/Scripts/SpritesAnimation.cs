@@ -21,7 +21,6 @@ public class SpritesAnimation : MonoBehaviour
 
     void ChangeSprites()
     {
-        
         _spriteRenderer.sprite = sprites[spriteCount];
         spriteCount = (spriteCount + 1) % spriteLength;
     }
