@@ -119,8 +119,8 @@ namespace Manager
 
         public List<PhotonView> GetPlayers() { return players; }
 
-        // Comment : Å¸ÀÌ¸ÓÀÇ °ü·ÃµÈ º¯¼ö´Â ÃßÈÄ¿¡ networkManager¿¡¼­ °ü¸®°¡ ÇÊ¿äÇÕ´Ï´Ù.
-        //           Á¢¼Ó½ÃÁ¡ÀÌ ±âÁØÀÌ ¾Æ´Ô.
+        // Comment : íƒ€ì´ë¨¸ì˜ ê´€ë ¨ëœ ë³€ìˆ˜ëŠ” ì¶”í›„ì— networkManagerì—ì„œ ê´€ë¦¬ê°€ í•„ìš”í•©ë‹ˆë‹¤.
+        //           ì ‘ì†ì‹œì ì´ ê¸°ì¤€ì´ ì•„ë‹˜.
         private void Start()
         {
             player = Resources.Load("Prefabs/PlayerChara") as GameObject;
@@ -134,7 +134,7 @@ namespace Manager
             {
                 StartCoroutine(DriveRanking());
             }
-            //SpawnPlayer(); // Todo: Â÷ÈÄ ³×Æ®¿öÅ© ±â´É Ãß°¡ ÀÌÈÄ¿¡´Â º¯°æÇØÁÖ¼¼¿ä.
+            //SpawnPlayer(); // Todo: ì°¨í›„ ë„¤íŠ¸ì›Œí¬ ê¸°ëŠ¥ ì¶”ê°€ ì´í›„ì—ëŠ” ë³€ê²½í•´ì£¼ì„¸ìš”.
         }
 
         private void InitializeComponents()
@@ -157,7 +157,7 @@ namespace Manager
         }
 
 
-        // PlayerController.csÀÇ void start()¿¡¼­ Ãß°¡ µË´Ï´Ù.
+        // PlayerController.csì˜ void start()ì—ì„œ ì¶”ê°€ ë©ë‹ˆë‹¤.
         public void AddPlayer(GameObject player)
         {
             var photonView = player.GetPhotonView();
@@ -296,7 +296,7 @@ namespace Manager
             }
         }
 
-        //  Todo: ³×Æ®¿öÅ© Á¢¼ÓÀÌ µÉ¶§ ÇÃ·¹ÀÌ¾î »ı¼º ÇÔ¼ö¸¦ È£ÃâÇÏ¸é µÉ°Å °°½À´Ï´Ù.
+        //  Todo: ë„¤íŠ¸ì›Œí¬ ì ‘ì†ì´ ë ë•Œ í”Œë ˆì´ì–´ ìƒì„± í•¨ìˆ˜ë¥¼ í˜¸ì¶œí•˜ë©´ ë ê±° ê°™ìŠµë‹ˆë‹¤.
         public void SpawnPlayer()
         {
             StartCoroutine(waitThenCallback(1f, () =>

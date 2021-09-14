@@ -69,3 +69,11 @@ crashlytics-build.properties
 # Temporary auto-generated Android Assets
 /[Aa]ssets/[Ss]treamingAssets/aa.meta
 /[Aa]ssets/[Ss]treamingAssets/aa/*
+
+
+
+# Unity Paid Assets
+# 유니티에서 사용된 유로 에셋들은 모두 ignore 처리 하셔야 됩니다.
+
+# Import
+
