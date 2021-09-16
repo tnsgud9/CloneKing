@@ -28,6 +28,13 @@ public enum SkillType
     Teleport,
     Shield,
 }
+public enum JumpType
+{
+    Ready,
+    Jump,
+    Falling,
+    Ground,
+};
 
 public static class ExtensionMethod
 {

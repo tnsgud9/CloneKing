@@ -6,58 +6,44 @@ using UnityEngine.UIElements;
 
 public class PlayerJump : MonoBehaviour
 {
+    
+    
+    // Components
     private PlayerMove _playerMove;
     private Animator _animator;
     private SpriteRenderer _spriteRenderer;
     private Rigidbody2D _rigidbody;
     private AudioSource _audioSource;
 
+    //Jump Variables
     private float _maxTime=1f;
     private float _pressTime;
     private JumpState _currentState;
     private bool _canJump = true;
-    private bool _playSounds = false;
+    private bool _playSounds = false; // If This is activated Player Sound is activated.
 
-    public float reflectForce = 0.5f;
-
+    //public float reflectForce = 0.5f;
+    
+    //Jump resources
     public Sprite jumpReadySprite;
     public Sprite jumpSprite;
     public Sprite fallSprite;
-    
     public PhysicsMaterial2D defaultPhyMat;
     public PhysicsMaterial2D bouncePhyMat;
-
     public AudioClip jumpSound;
     public AudioClip wallHitSound;
     public AudioClip groundHitSound;
-
     public GameObject jumpgauge;
-    private Animation _jumpgagueAnimation;
+    private Animation _jumpgagueAnim;
+    
+    
     private void Start()
     {
         InitializeComponents();
 
         ChangeJumpState(JumpState.Ground);
     }
-
-    private void InitializeComponents()
-    {
-        _spriteRenderer = GetComponent<SpriteRenderer>();
-        _animator = GetComponent<Animator>();
-        _playerMove = GetComponent<PlayerMove>();
-        _rigidbody = GetComponent<Rigidbody2D>();
-        _audioSource = GetComponent<AudioSource>();
-
-        _jumpgagueAnimation = jumpgauge.transform.GetChild(0).transform.GetChild(1).GetComponent<Animation>();
-        jumpgauge.SetActive(false);
-    }
-
     private void Update()
-    {
-        DriveJump();
-    }
-
-    private void DriveJump()
     {
         switch (_currentState)
         {
@@ -69,11 +55,26 @@ public class PlayerJump : MonoBehaviour
                 Falling();
                 break;
         }
-        
     }
-
+    
+    private void InitializeComponents()
+    {
+        _spriteRenderer = GetComponent<SpriteRenderer>();
+        _animator = GetComponent<Animator>();
+        _playerMove = GetComponent<PlayerMove>();
+        _rigidbody = GetComponent<Rigidbody2D>();
+        _audioSource = GetComponent<AudioSource>();
+        
+        _jumpgagueAnim = jumpgauge.transform.GetChild(0).transform.GetChild(1).GetComponent<Animation>();
+        jumpgauge.SetActive(false);
+    }
+    
+    
+    // SetPlaySounds is currently active and checked for control in the PhotonNetworks.
+    // Need to delete Photon Networks Functions 
     public void SetPlaySounds( bool playSounds)
     {
+        
         _playSounds = playSounds;
     }
 
@@ -206,8 +207,8 @@ public class PlayerJump : MonoBehaviour
         // Update 
         Sprite renderSprite = jumpReadySprite;
 
-        bool player_move_enable = false;
-        bool animator_enable = false;
+        bool playerMoveEnable = false;
+        bool animatorEnable = false;
 
         switch (_currentState)
         {
@@ -215,7 +216,7 @@ public class PlayerJump : MonoBehaviour
                 renderSprite = jumpReadySprite;
                 jumpgauge.SetActive(true);
                 
-                _jumpgagueAnimation.Play();
+                _jumpgagueAnim.Play();
                 break;
 
             case JumpState.Jump:
@@ -229,14 +230,14 @@ public class PlayerJump : MonoBehaviour
                 break;
 
             case JumpState.Ground:
-                player_move_enable = true;
-                animator_enable = true;
+                playerMoveEnable = true;
+                animatorEnable = true;
                 _canJump = true;
                 break;
         }
 
-        _playerMove.enabled = player_move_enable;
-        _animator.enabled = animator_enable;
+        _playerMove.enabled = playerMoveEnable;
+        _animator.enabled = animatorEnable;
         _spriteRenderer.sprite = renderSprite;
     }
 
@@ -269,6 +270,7 @@ public class PlayerJump : MonoBehaviour
         {
             if (_playSounds)
             {
+                
                 _audioSource.clip = wallHitSound;
                 _audioSource.Play();
             }

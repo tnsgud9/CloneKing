@@ -8,5 +8,4 @@ public enum JumpState
     Jump,
     Falling,
     Ground,
-    Goal
 };
