@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.UIElements;
 
 public class PlayerJump : MonoBehaviour
@@ -20,7 +21,7 @@ public class PlayerJump : MonoBehaviour
     private float _pressTime;
     private JumpState _currentState;
     private bool _canJump = true;
-    private bool _playSounds = false; // If This is activated Player Sound is activated.
+    [SerializeField] private bool _playSounds = false; // If This is activated Player Sound is activated.
 
     //public float reflectForce = 0.5f;
     
@@ -33,8 +34,8 @@ public class PlayerJump : MonoBehaviour
     public AudioClip jumpSound;
     public AudioClip wallHitSound;
     public AudioClip groundHitSound;
-    public GameObject jumpgauge;
-    private Animation _jumpgagueAnim;
+    public GameObject jumpGauge;
+    private Animation _jumpGagueAnim;
     
     
     private void Start()
@@ -65,8 +66,8 @@ public class PlayerJump : MonoBehaviour
         _rigidbody = GetComponent<Rigidbody2D>();
         _audioSource = GetComponent<AudioSource>();
         
-        _jumpgagueAnim = jumpgauge.transform.GetChild(0).transform.GetChild(1).GetComponent<Animation>();
-        jumpgauge.SetActive(false);
+        _jumpGagueAnim = jumpGauge.transform.GetChild(0).transform.GetChild(1).GetComponent<Animation>();
+        jumpGauge.SetActive(false);
     }
     
     
@@ -169,7 +170,7 @@ public class PlayerJump : MonoBehaviour
 
     private void Jump()
     {
-        jumpgauge.SetActive(false);
+        jumpGauge.SetActive(false);
         ChangeJumpState(JumpState.Jump);
 
         _rigidbody.sharedMaterial = bouncePhyMat;
@@ -214,14 +215,14 @@ public class PlayerJump : MonoBehaviour
         {
             case JumpState.Ready:
                 renderSprite = jumpReadySprite;
-                jumpgauge.SetActive(true);
+                jumpGauge.SetActive(true);
                 
-                _jumpgagueAnim.Play();
+                _jumpGagueAnim.Play();
                 break;
 
             case JumpState.Jump:
                 renderSprite = jumpSprite;
-                jumpgauge.SetActive(false);
+                jumpGauge.SetActive(false);
                 _canJump = false;
                 break;
 
@@ -259,10 +260,10 @@ public class PlayerJump : MonoBehaviour
 
         ChangeJumpState(JumpState.Falling);
 
-        Vector2 contact_normal = other.GetContact(0).normal;
+        Vector2 contactNormal = other.GetContact(0).normal;
         //_rigidbody.velocity = Vector2.Reflect(-other.relativeVelocity, contact_normal) * reflectForce;
 
-        if (contact_normal.y >= 0.8f)
+        if (contactNormal.y >= 0.8f)
         {
             Ground();
         }
@@ -270,7 +271,6 @@ public class PlayerJump : MonoBehaviour
         {
             if (_playSounds)
             {
-                
                 _audioSource.clip = wallHitSound;
                 _audioSource.Play();
             }

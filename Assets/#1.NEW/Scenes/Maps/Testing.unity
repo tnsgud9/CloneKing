@@ -25201,6 +25201,7 @@ GameObject:
   - component: {fileID: 4995436200106687103}
   - component: {fileID: 4995436200106687081}
   - component: {fileID: 4995436200106687080}
+  - component: {fileID: 4995436200106687082}
   m_Layer: 8
   m_Name: PlayerChara Prince1
   m_TagString: Player
@@ -25321,6 +25322,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   camera: {fileID: 0}
+--- !u!114 &4995436200106687082
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4995436200106687076}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 419be1ac604f63c4cb3216a93e064b10, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  type: 1
 --- !u!50 &4995436200106687097
 Rigidbody2D:
   serializedVersion: 4
@@ -25368,7 +25382,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2d5d13e6e915e8e4db51a58a18862c5b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  reflectForce: 0.5
+  _playSounds: 0
   jumpReadySprite: {fileID: 21300000, guid: 5fc4bd5689d744145964a35f53175b4c, type: 3}
   jumpSprite: {fileID: 21300000, guid: 2616793bcbb0ce54185944e3d0edfd18, type: 3}
   fallSprite: {fileID: 21300000, guid: 323c70eb821a389478dfed6e44a1e4a8, type: 3}
@@ -25377,7 +25391,7 @@ MonoBehaviour:
   jumpSound: {fileID: 8300000, guid: b1a3d57a4a9edd64ea83e6d4d6ac665f, type: 3}
   wallHitSound: {fileID: 8300000, guid: 0303672d54c355b47b9e4e8178970194, type: 3}
   groundHitSound: {fileID: 8300000, guid: 71f37893945ba624994f81b93dc804fe, type: 3}
-  jumpgauge: {fileID: 8725112398979099577}
+  jumpGauge: {fileID: 8725112398979099577}
 --- !u!61 &4995436200106687101
 BoxCollider2D:
   m_ObjectHideFlags: 0
