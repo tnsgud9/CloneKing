@@ -13,6 +13,11 @@ public class PushHandSkill : MonoBehaviour , ISkill
     public float pushForce;
     public Sprite playerPushSprite;
 
+    private void Awake()
+    {
+        
+    }
+
     private void Start()
     {
         
@@ -22,12 +27,11 @@ public class PushHandSkill : MonoBehaviour , ISkill
     {
         get => coolTime;
         set => coolTime = value;
+        
     }
 
     public void action()
     {
-        
+        Debug.Log("Push hand");
     }
-    
-    
 }

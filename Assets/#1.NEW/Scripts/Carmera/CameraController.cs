@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(Camera))]
-public class CameraManager : Singleton<MonoBehaviour>
+public class CameraController : Singleton<MonoBehaviour>
 {
 
     /// <summary>

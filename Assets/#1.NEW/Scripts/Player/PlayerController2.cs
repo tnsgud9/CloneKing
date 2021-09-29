@@ -61,6 +61,7 @@ public class PlayerController2 : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.LeftControl))
         {
             Debug.Log("Actived Player Skills");
+            _playerSkill.SkillAction();
             /*
             if (_playerSkill.IsExpiredCooltime())
             {

@@ -14,6 +14,7 @@ public class PlayerSkill : MonoBehaviour
 {
     
     public SkillTypes type;
+    public float coolTime;
     private ISkill skillHandler;
     private void Start()
     {
@@ -31,7 +32,7 @@ public class PlayerSkill : MonoBehaviour
         }
     }
 
-    public void skillAction()
+    public void SkillAction()
     {
         skillHandler.action();
     }
